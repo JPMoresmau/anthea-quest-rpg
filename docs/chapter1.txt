@@ -1,0 +1,65 @@
+Castle
+
+throne room
+	brother
+		-> says he can't let out a girl
+		-> accepts when hair cut
+
+study
+	teacher
+		-> if scroll, learn spell "fear" 1xp
+
+bedroom
+	maid
+		-> lost scissors (in garden) 1xp
+		-> cut hair +1 chr 2xp
+		-> arrange hair if cut with fountain +1 chr 1xp
+	mirror
+		-> if scissors cut hair 2 xp
+
+garden
+	fountain
+		-> if scissors use to cut hair in fountain -1 chr 2 xp
+	scissors
+		-> to maid
+		
+
+kitchen
+	cook 
+		-> kill rats in cellar
+		-> gives food +1xp
+
+cellar
+	rats
+		-> fight +1xp
+	scroll
+		-> take to teacher to learn spell
+
+courtyard
+	weapon master
+		-> training fight +1xp
+
+armory
+	sword
+
+gate
+	guard
+		-> refuse to let go out unless hair cut and talked to brother
+		-> +2xp
+
+Max xp: 10
+Min xp: 4
+
+Names (http://www.fantasynamegenerators.com/greek_names.php)
+Player: Anthea
+Brother: Peleus
+Maid: Nerita
+Cook: Cherise
+Weapons master: Scopas
+Guard: Theon
+Teacher: Cretien
+
+Father: Creon
+
+(http://www.fantasynamegenerators.com/ancient-greek-town-names.php)
+Castle: Selaion

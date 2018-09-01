@@ -1,0 +1,47 @@
+- search for your father who left ...
+	- to serve his king?
+	- to fight a dragon?
+
+	-> based on choices, outcome is difference
+		- father disappeared, no trace
+		- father died in various ways, find tomb
+			- killed by monster/dragon -> go on a hunt
+			- killed by somebody -> revenge or forgiveness
+		- father started a new life...
+		- father became baddy -> fight or join him
+
+- choose character
+	male/female -> will impact meetings
+		- female get unwanted attention from people (when charisma is high and strength/equipment low)
+		- male get challenged (when strength high)
+	or just female
+		need to disguise as a man before leaving castle
+		find equipement
+		cut hair
+			scissors, mirror or fountain in garden (-1 charisma, more xp)
+		find portrait of father
+	characteristics
+		- strength/dexterity/willpower/intelligence/charisma -> start at 8?
+		- extra points on startup -> no, no character creation, straight into the story
+		- increase on level up
+		- life points -> start at 10, increase on level up
+
+
+- equipment: make it simple
+	quest items -> disappear when used
+	just one main/one side weapon at a time? (side weapon can be shield or little knife, etc.) Need dexterity 10
+	just one armor type? or hat/boots/gloves extra?
+	additional equipment like rings and necklaces?
+	when you find something, the game tells you if better or not, you can use or discard (-> xp based on value of what you discard)
+	potions -> choose types of potions form what you know (number/strength depend on intelligence/level), they get made automatically when XPs
+
+- spells
+	learn spells (side quests to find teachers or scroll, random loot), choose how many to keep ready for use based on intelligence, effect depend on willpower
+
+- fight
+	strength (damage)/dexterity (initiative, hit probability)
+
+- interactions
+	charisma helps -> get information with less hassle/less side quests (but get same XP?) -> less side quests is not good
+
+

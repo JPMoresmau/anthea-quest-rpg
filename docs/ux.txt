@@ -1,0 +1,27 @@
+if save
+	new game
+	continue -> list of saves
+otherwise -> new game
+
+opening text
+
+menu
+	save -> new/overwrite save -> will we save automatically? (save point when reaching level or specific places-> back to any save point)
+	quit -> save? if actions since save -> shouldn't be present on mobile app
+	load
+	character sheet
+	inventory
+	spells
+	diary
+
+directions
+	-> click to move
+
+text -> actions next to items, characters
+		sometimes ask for confirmation is same item could be used differently
+
+
+combat
+	- state: character life points, opponent life points
+	- list spells, weapons, actions (flee), click to use
+	- list of actions that happened
