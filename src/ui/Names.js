@@ -8,3 +8,10 @@ export const characteristics = {
     xp: "Experience Points",
     life: "Life Points"
 }
+
+export function weaponDescription (weapon){
+    if (weapon){
+        return weapon.name + " (" + weapon.damage.low+"-"+ weapon.damage.high + ")";
+    }
+    return "None";
+}

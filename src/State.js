@@ -13,10 +13,10 @@ export const initialCharacter = {
 };
 
 export const initialInventory = {
-    mainWeapon: null,
-    secondaryWeapon: null,
-    questItems: [],
-    potions: []
+    mainWeapon: {name:"sword",damage:{low:1,high:6}},
+    secondaryWeapon: {name:"dagger",damage:{low:1,high:4}},
+    questItems: [{name:"some important quest item"}],
+    potions: [{name:"healing potion"},{name:"poison"}]
 }
 
 export const initialState = {

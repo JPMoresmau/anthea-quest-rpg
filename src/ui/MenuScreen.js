@@ -13,12 +13,15 @@ export class MenuScreen extends React.Component {
         <View style={styles.container}>
           <TouchableButton 
             text="Character"
-            label="Character Sheet" onPress={() =>
+            label="Character Sheet" 
+            onPress={() =>
               navigate('Character', { })
             }/>
           <TouchableButton 
             text="Inventory"
-            label="Inventory"/>
+            label="Inventory" onPress={() =>
+              navigate('Inventory', { })
+            }/>
           <TouchableButton 
             text="Spells"
             label="Spells"/>

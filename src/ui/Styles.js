@@ -17,5 +17,11 @@ export const textStyle = {
         color: "black",
         fontWeight: "bold",
         margin: 10,
+    },
+    bulletText: {
+        color: "black",
+        fontWeight: "normal",
+        margin: 10,
+        marginLeft: 20 
     }
 }

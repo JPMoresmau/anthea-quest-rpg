@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{Component} from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import {textStyle} from './Styles';
 
 import { updateCharacter } from '../Actions'
 
-class CharacterScreen extends React.Component {
+class CharacterScreen extends Component {
     static navigationOptions = {
       title: 'Character: Anthea',
     };
@@ -34,7 +34,6 @@ class CharacterScreen extends React.Component {
     }
   
   }
-
 
 const styles = StyleSheet.create(Object.assign({},{ 
     container: {
