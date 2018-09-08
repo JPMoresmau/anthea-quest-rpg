@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-
+import PropTypes from 'prop-types';
 import {TouchableButton} from './TouchableButton';
 
 export class MenuScreen extends React.Component {
@@ -42,6 +42,10 @@ export class MenuScreen extends React.Component {
     }
   
   }
+
+MenuScreen.propTypes = {
+    navigation: PropTypes.object
+    };
 
   export const styles = StyleSheet.create({ 
     container: {

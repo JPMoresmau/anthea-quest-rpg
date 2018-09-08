@@ -8,7 +8,7 @@ import {
 
 import { Provider, connect } from 'react-redux'
 
-import {MainScreen} from './src/ui/MainScreen';
+import MainScreen from './src/ui/MainScreen';
 import {MenuScreen} from './src/ui/MenuScreen';
 import CharacterScreen from './src/ui/CharacterScreen';
 import InventoryScreen from './src/ui/InventoryScreen';

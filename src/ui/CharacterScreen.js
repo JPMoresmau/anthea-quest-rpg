@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import {TouchableButton} from './TouchableButton';
@@ -44,6 +44,10 @@ const styles = StyleSheet.create(Object.assign({},{
     }
   },textStyle));
 
+  CharacterScreen.propTypes = {
+    chars: PropTypes.array,
+    onUpdate: PropTypes.func
+    };
 
   const mapStateToProps = state => {
     let chars = Object.entries(state.character).map(([key, value]) => ({key:characteristics[key],value:value}));

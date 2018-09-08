@@ -1,3 +1,4 @@
+import { HEALING, POISON, world } from "./World";
 
 
 
@@ -15,8 +16,8 @@ export const initialCharacter = {
 export const initialInventory = {
     mainWeapon: {name:"sword",damage:{low:1,high:6}},
     secondaryWeapon: {name:"dagger",damage:{low:1,high:4}},
-    questItems: [{name:"some important quest item"}],
-    potions: [{name:"healing potion"},{name:"poison"}]
+    questItems: [{name:"some important quest item",type:"important"}],
+    potions: [{name:"healing potion","type":HEALING},{name:"poison","type":POISON}]
 }
 
 export const initialState = {
@@ -24,7 +25,13 @@ export const initialState = {
     inventory: initialInventory,
     spells: [],
     diary: [],
-    position: "throne",
+    location: "throne",
     world: {},
     npcs: {}
+}
+
+export function getCurrentLocation(state){
+    const defaultLocation=world[state.location];
+    const myLocation=state.world[state.location];
+    return Object.assign({},defaultLocation,myLocation);
 }

@@ -1,15 +1,18 @@
 import React from 'react';
-import { TouchableOpacity , StyleSheet, Text, View } from 'react-native';
-
-
+import { StyleSheet, Text, View } from 'react-native';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {TouchableButton} from './TouchableButton';
+import { getCurrentLocation } from '../State';
+import { textStyle } from './Styles';
 
-export class MainScreen extends React.Component {
+class MainScreen extends React.Component {
     static navigationOptions = {
       title: 'FatherSearch',
     };
     render() {
       const { navigate } = this.props.navigation;
+      const { location } = this.props;
       return (
         
         <View style={styles.container}>
@@ -19,12 +22,17 @@ export class MainScreen extends React.Component {
             }
             text="Menu"
             label="Main menu"/>
+          <Text style={styles.listText}>{location.name}</Text>
         </View>
       );
     }
   
   }
 
+MainScreen.propTypes = {
+  navigation: PropTypes.object,
+  location: PropTypes.object
+  };
 
 const styles = StyleSheet.create({ 
     container: {
@@ -33,4 +41,12 @@ const styles = StyleSheet.create({
       alignItems: 'flex-start',
       justifyContent: 'flex-start',
     },
-  });
+  },textStyle);
+
+  const mapStateToProps = state => {
+    return {
+        location: getCurrentLocation(state)
+    };
+  };
+
+  export default connect(mapStateToProps)(MainScreen);

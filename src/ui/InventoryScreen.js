@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 
@@ -24,19 +24,28 @@ class InventoryScreen extends Component {
           <FlatList
             data={inventory.questItems}
             renderItem={({item}) => 
-                <SecondaryItem text={item.key} onDrop={()=>this.props.dropQuestItem(item.key)}/> }
+                <SecondaryItem text={item.key} onDrop={()=>this.props.dropQuestItem(item.type)}/> }
             />
           <Text style={styles.listText}>Potions</Text>
             <FlatList
                 data={inventory.potions}
                 renderItem={({item}) => 
-                    <SecondaryItem text={item.key} onUse={()=>this.props.usePotion(item.key)} onDrop={()=>this.props.dropPotion(item.key)}/> }
+                    <SecondaryItem text={item.key} onUse={()=>this.props.usePotion(item.type)} onDrop={()=>this.props.dropPotion(item.type)}/> }
                 />
         </View>
       );
     }
   
   }
+
+  InventoryScreen.propTypes = {
+    inventory: PropTypes.object,
+    dropMainWeapon: PropTypes.func,
+    dropSecondaryWeapon: PropTypes.func,
+    dropQuestItem: PropTypes.func,
+    usePotion: PropTypes.func,
+    dropPotion: PropTypes.func
+    };
 
 class MainItem extends Component {
     render() {
@@ -53,6 +62,12 @@ class MainItem extends Component {
         );
     }
 }
+
+MainItem.propTypes = {
+    text: PropTypes.string,
+    value: PropTypes.string,
+    onDrop: PropTypes.func
+    };
 
 class SecondaryItem extends Component {
     render() {
@@ -79,6 +94,12 @@ class SecondaryItem extends Component {
     }
 }
 
+SecondaryItem.propTypes = {
+    text: PropTypes.string,
+    onUse: PropTypes.func,
+    onDrop: PropTypes.func
+    };
+
 const styles = StyleSheet.create(Object.assign({},{ 
     container: {
       flex: 1,
@@ -100,8 +121,8 @@ const mapStateToProps = state => {
         inventory : {
             mainWeapon: weaponDescription(state.inventory.mainWeapon),
             secondaryWeapon: weaponDescription(state.inventory.secondaryWeapon),
-            questItems: state.inventory.questItems.map(i=>{return {key:i.name}}),
-            potions: state.inventory.potions.map(i=>{return {key:i.name}})
+            questItems: state.inventory.questItems.map(i=>{return {key:i.name,type:i.type}}),
+            potions: state.inventory.potions.map(i=>{return {key:i.name,type:i.type}})
         }
        
     };
