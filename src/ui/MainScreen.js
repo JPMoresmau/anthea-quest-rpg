@@ -3,9 +3,9 @@ import {FlatList, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {TouchableButton} from './TouchableButton';
-import { getCurrentLocation, getNPC } from '../State';
+import { getCurrentLocation, getNPC, getExits } from '../State';
 import { textStyle } from './Styles';
-import { pickUpMainWeapon, pickUpQuestItem, pickUpPotion } from '../Actions';
+import { pickUpMainWeapon, pickUpQuestItem, pickUpPotion, moveTo } from '../Actions';
 import { weaponDescription } from './Names';
 
 class MainScreen extends Component {
@@ -14,7 +14,7 @@ class MainScreen extends Component {
     };
     render() {
       const { navigate } = this.props.navigation;
-      const { location, npcs, weapons, questItems, potions } = this.props;
+      const { location, npcs, weapons, questItems, potions, exits } = this.props;
       return (
         
         <View style={styles.container}>
@@ -47,6 +47,12 @@ class MainScreen extends Component {
             renderItem={({item}) => 
                 <ItemComponent text={item.name} onPickup={()=>this.props.pickUpPotion(item.key)}/> }
             />
+            <Text style={styles.listText}>You can go to:</Text>
+            <FlatList
+            data={exits}
+            renderItem={({item}) => 
+                <ExitComponent text={item.name} onMove={()=>this.props.goToExit(item.key)}/> }
+            />
         </View>
       );
     }
@@ -64,6 +70,8 @@ MainScreen.propTypes = {
   pickUpItem: PropTypes.func,
   potions: PropTypes.array,
   pickUpPotion: PropTypes.func,
+  exits: PropTypes.array,
+  goToExit: PropTypes.func,
   };
 
 const styles = StyleSheet.create(Object.assign({},{ 
@@ -93,12 +101,14 @@ const styles = StyleSheet.create(Object.assign({},{
     const potions = loc.potions.map(i=>{
         return {'key':i.name,'name':i.name};
       });    
+    const exits = getExits(state);
     return {
         location: loc,
         npcs: npcs,
         weapons: weapons,
         questItems: questItems,
-        potions: potions
+        potions: potions,
+        exits: exits
     };
   };
 
@@ -116,6 +126,9 @@ const styles = StyleSheet.create(Object.assign({},{
         },
         pickUpPotion: (name) => {
           dispatch(pickUpPotion(name));
+        },
+        goToExit: (name) => {
+          dispatch(moveTo(name));
         }
       }
     };
@@ -163,4 +176,25 @@ NPCComponent.propTypes = {
 ItemComponent.propTypes = {
   text: PropTypes.string,
   onPickup: PropTypes.func
+  };
+
+  class ExitComponent extends Component {
+    render() {
+        return (
+            <View style={styles.item}>
+                <Text style={styles.bulletText}>{this.props.text}</Text>
+                <TouchableButton 
+                onPress={() => {
+                    this.props.onMove();
+                }}
+                text="Go"
+                label="Go"/>
+            </View>
+        );
+    }
+}
+
+ExitComponent.propTypes = {
+  text: PropTypes.string,
+  onMove: PropTypes.func
   };

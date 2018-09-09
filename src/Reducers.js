@@ -1,5 +1,5 @@
 import { initialCharacter, initialState, initialInventory, getCurrentLocation, emptyInventory} from "./State";
-import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION} from "./Actions";
+import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION, MOVE} from "./Actions";
 import {nextLevel, maxLifePoints, LIFE_PER_LEVEL} from './RPG'; 
 import {removeFirstMatch, pushArray, first} from './Utils';
 
@@ -136,6 +136,14 @@ function reduceLocation(location = {},inventory = initialInventory, action) {
     }
 }
 
+function reduceState(state = initialState, action){
+    switch (action.type){
+        case MOVE:
+            return Object.assign({}, state,  {location:action.name});  
+        default:
+            return state;
+    }
+}
 
 export function reduceAll(state=initialState,action){
     const character = reduceCharacter(state.character,state.inventory,action);
@@ -144,7 +152,8 @@ export function reduceAll(state=initialState,action){
     let nw={};
     nw[state.location]=location;
     const newWorld = Object.assign({},state.world,nw);
-    return Object.assign({}, state, {
+    const ns=reduceState(state,action);
+    return Object.assign({}, ns, {
         character: character, inventory: inventory,world: newWorld
     });
 

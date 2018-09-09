@@ -39,13 +39,22 @@ export const initialState = {
 }
 
 export function getCurrentLocation(state){
-    const defaultLocation=world[state.location];
-    const myLocation=state.world[state.location];
-    return Object.assign({},defaultLocation,myLocation);
+    return getLocation(state,state.location);
+}
+
+export function getLocation(state,locationName){
+    const defaultLocation=world[locationName];
+    const myLocation=state.world[locationName];
+    return Object.assign({weapons:[],potions:[],questItems:[],npcs:[],exits:[]},defaultLocation,myLocation);
 }
 
 export function getNPC(state, npcKey){
     const defaultNPC = npcs[npcKey];
     const myNPC = state.npcs[npcKey];
     return Object.assign({key:npcKey},defaultNPC,myNPC);
+}
+
+export function getExits(state){
+    const myLoc=getCurrentLocation(state);
+    return myLoc.exits.map(e=>({key:e,name:getLocation(state,e).name}));
 }

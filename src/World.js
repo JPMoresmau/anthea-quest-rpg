@@ -5,7 +5,14 @@ export const world = {
         npcs: ["Peleus"],
         weapons: [],
         questItems: [],
-        potions: []
+        potions: [],
+        exits: ["study"]
+    },
+    "study": {
+        name: "The study",
+        description: "A small room, with a table and stool facing the windows. A chest of books is on the side.",
+        npcs: ["Cretien"],
+        exits: ["throne"]
     }
 
 
@@ -14,6 +21,9 @@ export const world = {
 export const npcs = {
     "Peleus": {
         name: "Peleus, your brother"
+    },
+    "Cretien": {
+        name: "Cretien, your old teacher"
     }
 }
 

@@ -11,6 +11,7 @@ export const PICKUP_MAIN_WEAPON = 'PICKUP_MAIN_WEAPON';
 export const PICKUP_SECONDARY_WEAPON = 'PICKUP_SECONDARY_WEAPON';
 export const PICKUP_QUEST_ITEM = 'PICKUP_QUEST_ITEM';
 export const PICKUP_POTION = 'PICKUP_POTION';
+export const MOVE = 'MOVE';
 
 export function updateCharacter(characteristic, diff) {
     return {
@@ -77,6 +78,13 @@ export function pickUpQuestItem(name){
 export function pickUpPotion(name){
   return {
     type:PICKUP_POTION,
+    name
+  };
+}
+
+export function moveTo(name){
+  return {
+    type:MOVE,
     name
   };
 }

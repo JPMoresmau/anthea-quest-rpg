@@ -1,4 +1,4 @@
-import {updateCharacter, usePotion, dropMainWeapon, pickUpMainWeapon, dropSecondaryWeapon, dropQuestItem, dropPotion, pickUpSecondaryWeapon, pickUpQuestItem, pickUpPotion} from "../src/Actions"
+import {updateCharacter, usePotion, dropMainWeapon, pickUpMainWeapon, dropSecondaryWeapon, dropQuestItem, dropPotion, pickUpSecondaryWeapon, pickUpQuestItem, pickUpPotion, moveTo} from "../src/Actions"
 import {reduceAll} from "../src/Reducers"
 import {initialState, getCurrentLocation} from "../src/State"
 import { HEALING_LIFE, POISON_LIFE } from "../src/World";
@@ -110,6 +110,15 @@ describe('reducer tests',()=>{
             const state3=reduceAll(state2,pickUpPotion(healing.name));
             expect(getCurrentLocation(state3).potions).toEqual([]);
             expect(state3.inventory.potions).toEqual([poison,healing]);
+        });
+    });
+
+    describe('Move',()=>{
+        test ("move to location",()=>{
+            const state=Object.assign({},initialState,{inventory:testInventory});
+            expect(getCurrentLocation(state).name).toEqual("Selaion throne room");
+            const state2=reduceAll(state,moveTo("study"));
+            expect(getCurrentLocation(state2).name).toEqual("The study");
         });
     });
 });
