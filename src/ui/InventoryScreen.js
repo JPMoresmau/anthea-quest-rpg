@@ -18,19 +18,19 @@ class InventoryScreen extends Component {
       const { inventory } = this.props;
       return (
         <View style={styles.container}>
-          <MainItem text="Main Weapon" value={inventory.mainWeapon} onDrop={this.props.dropMainWeapon}/>
-          <MainItem text="Secondary Weapon" value={inventory.secondaryWeapon} onDrop={this.props.dropSecondaryWeapon}/>
+          <MainItem text="Main Weapon" value={inventory.mainWeapon} canDrop={inventory.mainWeapon!==weaponDescription(null)} onDrop={this.props.dropMainWeapon}/>
+          <MainItem text="Secondary Weapon" value={inventory.secondaryWeapon} canDrop={inventory.secondaryWeapon!==weaponDescription(null)} onDrop={this.props.dropSecondaryWeapon}/>
           <Text style={styles.listText}>Quest items</Text>
           <FlatList
             data={inventory.questItems}
             renderItem={({item}) => 
-                <SecondaryItem text={item.key} onDrop={()=>this.props.dropQuestItem(item.type)}/> }
+                <SecondaryItem text={item.key} onDrop={()=>this.props.dropQuestItem(item.key)}/> }
             />
           <Text style={styles.listText}>Potions</Text>
             <FlatList
                 data={inventory.potions}
                 renderItem={({item}) => 
-                    <SecondaryItem text={item.key} onUse={()=>this.props.usePotion(item.type)} onDrop={()=>this.props.dropPotion(item.type)}/> }
+                    <SecondaryItem text={item.key} onUse={()=>this.props.usePotion(item.key)} onDrop={()=>this.props.dropPotion(item.key)}/> }
                 />
         </View>
       );
@@ -52,12 +52,14 @@ class MainItem extends Component {
         return (
             <View style={styles.item}>
                 <Text style={styles.listText}>{this.props.text}:{this.props.value}</Text>
-                <TouchableButton 
-                onPress={() => {
-                    this.props.onDrop();
-                }}
-                text="Drop"
-                label="Drop"/>
+                { this.props.canDrop &&
+                    <TouchableButton 
+                    onPress={() => {
+                        this.props.onDrop();
+                    }}
+                    text="Drop"
+                    label="Drop"/>
+                }
             </View>
         );
     }
@@ -66,7 +68,8 @@ class MainItem extends Component {
 MainItem.propTypes = {
     text: PropTypes.string,
     value: PropTypes.string,
-    onDrop: PropTypes.func
+    onDrop: PropTypes.func,
+    canDrop: PropTypes.bool
     };
 
 class SecondaryItem extends Component {
@@ -121,8 +124,8 @@ const mapStateToProps = state => {
         inventory : {
             mainWeapon: weaponDescription(state.inventory.mainWeapon),
             secondaryWeapon: weaponDescription(state.inventory.secondaryWeapon),
-            questItems: state.inventory.questItems.map(i=>{return {key:i.name,type:i.type}}),
-            potions: state.inventory.potions.map(i=>{return {key:i.name,type:i.type}})
+            questItems: state.inventory.questItems.map(i=>{return {key:i.name}}),
+            potions: state.inventory.potions.map(i=>{return {key:i.name}})
         }
        
     };

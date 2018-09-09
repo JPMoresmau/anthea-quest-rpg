@@ -7,6 +7,11 @@ export const DROP_POTION = 'DROP_POTION';
 
 export const USE_POTION = 'USE_POTION';
 
+export const PICKUP_MAIN_WEAPON = 'PICKUP_MAIN_WEAPON';
+export const PICKUP_SECONDARY_WEAPON = 'PICKUP_SECONDARY_WEAPON';
+export const PICKUP_QUEST_ITEM = 'PICKUP_QUEST_ITEM';
+export const PICKUP_POTION = 'PICKUP_POTION';
+
 export function updateCharacter(characteristic, diff) {
     return {
       type: CHARACTER_UPDATE,
@@ -44,6 +49,34 @@ export function dropPotion(name){
 export function usePotion(name){
   return {
     type:USE_POTION,
+    name
+  };
+}
+
+export function pickUpMainWeapon(name){
+  return {
+    type:PICKUP_MAIN_WEAPON,
+    name
+  };
+}
+
+export function pickUpSecondaryWeapon(name){
+  return {
+    type:PICKUP_SECONDARY_WEAPON,
+    name
+  };
+}
+
+export function pickUpQuestItem(name){
+  return {
+    type:PICKUP_QUEST_ITEM,
+    name
+  };
+}
+
+export function pickUpPotion(name){
+  return {
+    type:PICKUP_POTION,
     name
   };
 }

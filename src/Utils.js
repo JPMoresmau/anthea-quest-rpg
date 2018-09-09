@@ -27,3 +27,10 @@ export function pushArray(arr, el){
     }
     return ret;
 }
+
+export function first(arr){
+    if (arr && arr.length>0){
+        return arr[0];
+    }
+    return null;
+}

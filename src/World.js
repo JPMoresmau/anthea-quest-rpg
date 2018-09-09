@@ -2,6 +2,7 @@ export const world = {
     "throne": {
         name: "Selaion throne room",
         description: "The throne room of the palace. A bit bare but majestic.",
+        npcs: ["Peleus"],
         weapons: [],
         questItems: [],
         potions: []
@@ -16,7 +17,6 @@ export const npcs = {
     }
 }
 
-export const HEALING = "HEALING";
 export const HEALING_LIFE = 10;
-export const POISON = "POISON";
-export const POISON_LIFE = 8;
+export const POISON_LIFE = -8;
+

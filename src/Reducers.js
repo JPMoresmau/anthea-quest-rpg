@@ -1,10 +1,9 @@
-import { initialCharacter, initialState, initialInventory, getCurrentLocation} from "./State";
-import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION} from "./Actions";
+import { initialCharacter, initialState, initialInventory, getCurrentLocation, emptyInventory} from "./State";
+import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION} from "./Actions";
 import {nextLevel, maxLifePoints, LIFE_PER_LEVEL} from './RPG'; 
-import {removeFirstMatch, pushArray} from './Utils';
-import { HEALING, POISON, HEALING_LIFE, POISON_LIFE } from "./World";
+import {removeFirstMatch, pushArray, first} from './Utils';
 
-function reduceCharacter(character=initialCharacter,action){
+function reduceCharacter(character=initialCharacter,inventory=initialInventory, action){
     
     switch (action.type){
         case CHARACTER_UPDATE:
@@ -13,12 +12,30 @@ function reduceCharacter(character=initialCharacter,action){
             newChar=checkNextLevel(character,action,newChar);
             return Object.assign({}, character,  newChar);
         case USE_POTION:
-            return usePotion(character, action.name);
+            const potions = inventory.potions.filter(i=>i.name === action.name);
+            if (potions.length>0){
+                return applyEffects(character,potions[0].effects);
+            }
+            return character;
         default:
             return character;
     }
 }
 
+function applyEffects(character, effects){
+    let nc={};
+    for (let i=0;i<effects.length;i++){
+        let currentValue=character[effects[i].characteristic];
+        let newValue=currentValue+effects[i].diff;
+        if ("life"===effects[i].characteristic){
+            newValue=Math.min(newValue,maxLifePoints(character.level));
+        }
+        nc[effects[i].characteristic]=newValue;
+    }
+    return Object.assign({}, character, nc);
+}
+
+/*
 function usePotion(character, name){
     switch (name){
         case HEALING:
@@ -31,7 +48,7 @@ function usePotion(character, name){
         default:
             return character;
     }
-}
+}*/
 
 function checkNextLevel(character,action,newChar){
     if ("xp"===action.characteristic){
@@ -52,26 +69,38 @@ function checkNextLevel(character,action,newChar){
     return newChar;
 }
 
-function reduceInventory(inventory = initialInventory, action) {
+function reduceInventory(inventory = initialInventory,location = {}, action) {
     switch (action.type){
         case DROP_MAIN_WEAPON:
             return Object.assign({}, inventory,  {mainWeapon:null});
         case DROP_SECONDARY_WEAPON:
             return Object.assign({}, inventory,  {secondaryWeapon:null});
         case DROP_QUEST_ITEM:
-            let questItems = removeFirstMatch(inventory.questItems,i=>i.type === action.name);
+            let questItems = removeFirstMatch(inventory.questItems,i=>i.name === action.name);
             return Object.assign({}, inventory,  {questItems:questItems});
         case DROP_POTION:
         case USE_POTION:
-            let potions = removeFirstMatch(inventory.potions,i=>i.type === action.name);    
+            let potions = removeFirstMatch(inventory.potions,i=>i.name === action.name);    
             return Object.assign({}, inventory,  {potions:potions});
+        case PICKUP_MAIN_WEAPON:
+            let weapons = location.weapons.filter(i=>i.name === action.name);
+            return Object.assign({}, inventory,  {mainWeapon:first(weapons)});
+        case PICKUP_SECONDARY_WEAPON:
+            let weapons2 = location.weapons.filter(i=>i.name === action.name);
+            return Object.assign({}, inventory,  {secondaryWeapon:first(weapons2)});
+        case PICKUP_QUEST_ITEM:
+            let questItems2 = location.questItems.filter(i=>i.name === action.name);
+            return Object.assign({}, inventory,  {questItems:pushArray(inventory.questItems,first(questItems2))});
+        case PICKUP_POTION:
+            let potions2 = location.potions.filter(i=>i.name === action.name);
+            return Object.assign({}, inventory,  {potions:pushArray(inventory.potions,first(potions2))});
         default:
             return inventory;
     }
 }
 
 
-function reduceLocation(inventory = initialInventory, location = {}, action) {
+function reduceLocation(location = {},inventory = initialInventory, action) {
     switch (action.type){
         case DROP_MAIN_WEAPON:
             const mw=inventory.mainWeapon;
@@ -79,23 +108,29 @@ function reduceLocation(inventory = initialInventory, location = {}, action) {
            
         case DROP_SECONDARY_WEAPON:
             const sw=inventory.secondaryWeapon;
-            if (sw){
-                return Object.assign({}, location,  {weapons:location.weapons.push(sw)});
-            }
-            return location;
+            return Object.assign({}, location,  {weapons:pushArray(location.weapons,sw)});
         case DROP_QUEST_ITEM:
-            let questItems = inventory.questItems.filter(i=>i.type === action.name);
+            let questItems = inventory.questItems.filter(i=>i.name === action.name);
             if (questItems.length>0){
-                return Object.assign({}, location,  {weapons:location.questItems.push(questItems[0])});
+                return Object.assign({}, location,  {questItems:pushArray(location.questItems,questItems[0])});
             }
             return location;
         case DROP_POTION:
-            let potions = inventory.questItems.filter(i=>i.type === action.name);
+            let potions = inventory.potions.filter(i=>i.name === action.name);
             if (potions.length>0){
-                return Object.assign({}, location,  {weapons:location.potions.push(potions[0])});
+                return Object.assign({}, location,  {potions:pushArray(location.potions,potions[0])});
             }
             return location;
-         
+        case PICKUP_MAIN_WEAPON:
+        case PICKUP_SECONDARY_WEAPON:
+            let weapons = removeFirstMatch(location.weapons,(i=>i.name === action.name));
+            return Object.assign({}, location,  {weapons:weapons});
+        case PICKUP_QUEST_ITEM:
+            let questItems2 = removeFirstMatch(location.questItems,(i=>i.name === action.name));
+            return Object.assign({}, location,  {questItems:questItems2});
+        case PICKUP_POTION:
+            let potions2 = removeFirstMatch(location.potions,(i=>i.name === action.name));
+            return Object.assign({}, location,  {potions:potions2});    
         default:
             return location;
     }
@@ -103,9 +138,9 @@ function reduceLocation(inventory = initialInventory, location = {}, action) {
 
 
 export function reduceAll(state=initialState,action){
-    const character = reduceCharacter(state.character,action);
-    const inventory = reduceInventory(state.inventory,action);
-    const location = reduceLocation(state.inventory,getCurrentLocation(state),action);
+    const character = reduceCharacter(state.character,state.inventory,action);
+    const inventory = reduceInventory(state.inventory,getCurrentLocation(state),action);
+    const location = reduceLocation(getCurrentLocation(state),state.inventory,action);
     let nw={};
     nw[state.location]=location;
     const newWorld = Object.assign({},state.world,nw);
