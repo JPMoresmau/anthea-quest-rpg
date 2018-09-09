@@ -1,9 +1,9 @@
 import React,{Component} from 'react';
-import {FlatList, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {TouchableButton} from './TouchableButton';
-import { getCurrentLocation, getNPC, getExits } from '../State';
+import { getCurrentLocation, getNPC, getExits, getInteraction } from '../State';
 import { textStyle } from './Styles';
 import { pickUpMainWeapon, pickUpQuestItem, pickUpPotion, moveTo } from '../Actions';
 import { weaponDescription } from './Names';
@@ -30,7 +30,7 @@ class MainScreen extends Component {
           <FlatList
             data={npcs}
             renderItem={({item}) => 
-                <NPCComponent text={item.name} onInteract={()=>this.props.interact(item.key)}/> }
+                <NPCComponent text={item.name} onInteract={()=>this.interactWithNPC(item.key,item.name)}/> }
             />
             <FlatList
             data={weapons}
@@ -53,17 +53,26 @@ class MainScreen extends Component {
             renderItem={({item}) => 
                 <ExitComponent text={item.name} onMove={()=>this.props.goToExit(item.key)}/> }
             />
+           
         </View>
       );
     }
-  
+    interactWithNPC(npcKey,npcName){
+      
+      const interaction = getInteraction(this.props.state,npcKey);
+      Alert.alert(npcName +":",'"'+interaction.text+'"',[{text:"Close"}]);
+      if (interaction.actions){
+        interaction.actions.forEach(a=>this.props.dynamic(a));
+      }
+    }
   }
 
 MainScreen.propTypes = {
   navigation: PropTypes.object,
+  state: PropTypes.object,
   location: PropTypes.object,
   npcs: PropTypes.array,
-  interact: PropTypes.func,
+  dynamic: PropTypes.func,
   weapons: PropTypes.array,
   pickUpWeapon: PropTypes.func,
   questItems: PropTypes.array,
@@ -103,6 +112,7 @@ const styles = StyleSheet.create(Object.assign({},{
       });    
     const exits = getExits(state);
     return {
+        state: state,
         location: loc,
         npcs: npcs,
         weapons: weapons,
@@ -115,8 +125,8 @@ const styles = StyleSheet.create(Object.assign({},{
 
   const mapDispatchToProps = dispatch => {
     return {
-       interact: () => {
-           
+       dynamic: (action) => {
+           dispatch(action);
         },
         pickUpWeapon: (name) => {
           dispatch(pickUpMainWeapon(name));

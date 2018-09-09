@@ -1,5 +1,5 @@
 import { initialCharacter, initialState, initialInventory, getCurrentLocation, emptyInventory} from "./State";
-import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION, MOVE} from "./Actions";
+import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION, MOVE, SET_FLAG} from "./Actions";
 import {nextLevel, maxLifePoints, LIFE_PER_LEVEL} from './RPG'; 
 import {removeFirstMatch, pushArray, first} from './Utils';
 
@@ -31,6 +31,7 @@ function applyEffects(character, effects){
             newValue=Math.min(newValue,maxLifePoints(character.level));
         }
         nc[effects[i].characteristic]=newValue;
+        nc=checkNextLevel(character,effects[i],nc);
     }
     return Object.assign({}, character, nc);
 }
@@ -140,6 +141,10 @@ function reduceState(state = initialState, action){
     switch (action.type){
         case MOVE:
             return Object.assign({}, state,  {location:action.name});  
+        case SET_FLAG:
+            let newFlags=Object.assign({},state.flags);
+            newFlags[action.name]=true;
+            return Object.assign({}, state,  {flags:newFlags});  
         default:
             return state;
     }

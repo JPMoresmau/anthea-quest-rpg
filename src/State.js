@@ -35,7 +35,8 @@ export const initialState = {
     diary: [],
     location: "throne",
     world: {},
-    npcs: {}
+    npcs: {},
+    flags: {}
 }
 
 export function getCurrentLocation(state){
@@ -56,5 +57,21 @@ export function getNPC(state, npcKey){
 
 export function getExits(state){
     const myLoc=getCurrentLocation(state);
-    return myLoc.exits.map(e=>({key:e,name:getLocation(state,e).name}));
+    return myLoc.exits.filter(e=>itemWithFlag(state,e)).map(e=>({key:e.key,name:getLocation(state,e.key).name}));
+}
+
+function itemWithFlag(state,item){
+    if (item.ifFilter){
+        return isFlagSet(state,item.ifFilter);
+    }
+    return true
+}
+
+export function isFlagSet(state,flag){
+    return Boolean(state.flags[flag]);
+}
+
+export function getInteraction(state,npcKey){
+    const npc=getNPC(state,npcKey);
+    return npc.interactions.filter(e=>itemWithFlag(state,e))[0];
 }
