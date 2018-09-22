@@ -1,4 +1,4 @@
-import { setFlag, dropQuestItem, raiseXP, useQuestItem, addDiary } from "./Actions";
+import { setFlag, raiseXP, useQuestItem, addDiary, updateCharacter } from "./Actions";
 
 export const world = {
     "throne": {
@@ -54,10 +54,12 @@ export const allNpcs = {
         name: "Nerita, your maid",
         interactions: [{"text":"You'll always be a little girl to me. Let me comb your hair!"},
             {"ifQuestItem":"scissors",
-             "actions": [setFlag("hairCut"),useQuestItem('scissors'),raiseXP(2),addDiary("Nerita cut my hair so I don't look too much like a girl now.")],
-             "text":"Really a shame to cut such beautiful hair!"},
+             "type":"question",
+             "beforeText":"You really want me to cut your hair with these scissors?",
+             "actions": [setFlag("hairCut"),useQuestItem('scissors'),raiseXP(2),updateCharacter('charisma',1),addDiary("Nerita cut my hair so I don't look too much like a girl now. I think it suits me")],
+             "afterText":"Really a shame to cut such beautiful hair!"},
             {"ifFlag":"hairCut",
-                "text":"You look like a boy now!"
+                "text":"You look like a boy now! A pretty boy!"
             }
         ]
     }
@@ -81,4 +83,9 @@ export const allQuestItems = {
     "scissors": {
         "name": "Sharp scissors"
     }
+}
+
+export const allWeapons  = {
+    "sword" : {name:"Sword",damage:{low:1,high:6}},
+    "dagger" : {name:"Dagger",damage:{low:1,high:4}}
 }

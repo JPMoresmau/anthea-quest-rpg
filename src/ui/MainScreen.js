@@ -6,8 +6,10 @@ import {TouchableButton} from './TouchableButton';
 import { getCurrentLocation, getNPC, getExits, getInteraction } from '../State';
 import { textStyle } from './Styles';
 import { pickUpMainWeapon, pickUpQuestItem, pickUpPotion, moveTo } from '../Actions';
-import { weaponDescription } from './Names';
+import { weaponDescription, toastCharacterChange } from './UIUtils';
 import { allPotions, allQuestItems } from '../World';
+
+
 
 class MainScreen extends Component {
     static navigationOptions = {
@@ -61,10 +63,37 @@ class MainScreen extends Component {
     interactWithNPC(npcKey,npcName){
       
       const interaction = getInteraction(this.props.state,npcKey);
-      Alert.alert(npcName +":",'"'+interaction.text+'"',[{text:"Close"}]);
-      if (interaction.actions){
-        interaction.actions.forEach(a=>this.props.dynamic(a));
+      if ("question" == interaction.type){
+          Alert.alert(npcName +":",'"'+interaction.beforeText+'"',[
+          {text:"Yes",
+           onPress:()=>{
+            if (interaction.actions){
+              interaction.actions.forEach(a=>this.props.dynamic(a));
+            }
+            Alert.alert(npcName +":",'"'+interaction.afterText+'"',[
+              {text:"Close"}]);
+            }
+          },
+          {text:"No"}]);
+      } else {
+          Alert.alert(npcName +":",'"'+interaction.text+'"',[
+          {text:"Close",
+           onPress:()=>{
+            if (interaction.actions){
+              interaction.actions.forEach(a=>this.props.dynamic(a));
+            }
+         }
+          }]);
+        
       }
+     
+    }
+
+    componentDidUpdate(prevProps){
+      const newChar=this.props.state.character;
+      const oldChar=prevProps.state.character;
+      toastCharacterChange(oldChar,newChar);
+     
     }
   }
 
@@ -112,6 +141,7 @@ const styles = StyleSheet.create(Object.assign({},{
         return {'key':i,'name':allPotions[i].name};
       });    
     const exits = getExits(state);
+
     return {
         state: state,
         location: loc,

@@ -1,4 +1,4 @@
-import { initialCharacter, initialState, initialInventory, getCurrentLocation, emptyInventory} from "./State";
+import { initialCharacter, initialState, initialInventory, getCurrentLocation} from "./State";
 import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION, MOVE, SET_FLAG, USE_QUEST_ITEM, ADD_DIARY} from "./Actions";
 import {nextLevel, maxLifePoints, LIFE_PER_LEVEL} from './RPG'; 
 import {removeFirstMatch, pushArray, first} from './Utils';
@@ -86,10 +86,10 @@ function reduceInventory(inventory = initialInventory,location = {}, action) {
             let potions = removeFirstMatch(inventory.potions,i=>i === action.name);    
             return Object.assign({}, inventory,  {potions:potions});
         case PICKUP_MAIN_WEAPON:
-            let weapons = location.weapons.filter(i=>i.name === action.name);
+            let weapons = location.weapons.filter(i=>i === action.name);
             return Object.assign({}, inventory,  {mainWeapon:first(weapons)});
         case PICKUP_SECONDARY_WEAPON:
-            let weapons2 = location.weapons.filter(i=>i.name === action.name);
+            let weapons2 = location.weapons.filter(i=>i === action.name);
             return Object.assign({}, inventory,  {secondaryWeapon:first(weapons2)});
         case PICKUP_QUEST_ITEM:
             let questItems2 = location.questItems.filter(i=>i === action.name);
@@ -126,7 +126,7 @@ function reduceLocation(location = {},inventory = initialInventory, action) {
             return location;
         case PICKUP_MAIN_WEAPON:
         case PICKUP_SECONDARY_WEAPON:
-            let weapons = removeFirstMatch(location.weapons,(i=>i.name === action.name));
+            let weapons = removeFirstMatch(location.weapons,(i=>i === action.name));
             return Object.assign({}, location,  {weapons:weapons});
         case PICKUP_QUEST_ITEM:
             let questItems2 = removeFirstMatch(location.questItems,(i=>i === action.name));

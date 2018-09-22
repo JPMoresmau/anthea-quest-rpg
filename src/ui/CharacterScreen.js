@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import {characteristics} from './Names';
+import {characteristics} from './UIUtils';
 import {textStyle} from './Styles';
 
 

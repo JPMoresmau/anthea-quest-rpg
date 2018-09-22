@@ -1,4 +1,4 @@
-import { world, allNpcs, HEALING_LIFE, POISON_LIFE } from "./World";
+import { world, allNpcs } from "./World";
 
 
 
@@ -14,8 +14,8 @@ export const initialCharacter = {
 };
 
 export const initialInventory = {
-    mainWeapon: {name:"sword",damage:{low:1,high:6}},
-    secondaryWeapon: {name:"dagger",damage:{low:1,high:4}},
+    mainWeapon: null,
+    secondaryWeapon: null,
     questItems: [],
     potions: []
 }

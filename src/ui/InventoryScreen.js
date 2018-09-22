@@ -7,9 +7,9 @@ import { connect } from 'react-redux';
 import { dropMainWeapon,dropSecondaryWeapon,dropQuestItem,dropPotion,usePotion } from '../Actions'
 
 import {TouchableButton} from './TouchableButton';
-import {weaponDescription} from './Names';
+import {weaponDescription, toastCharacterChange} from './UIUtils';
 import {textStyle} from './Styles';
-import { potions, allQuestItems, allPotions } from '../World';
+import { allQuestItems, allPotions, allWeapons } from '../World';
 
 class InventoryScreen extends Component {
     static navigationOptions = {
@@ -37,6 +37,12 @@ class InventoryScreen extends Component {
       );
     }
   
+    componentDidUpdate(prevProps){
+        const newChar=this.props.character;
+        const oldChar=prevProps.character;
+        toastCharacterChange(oldChar,newChar);
+       
+      }
   }
 
   InventoryScreen.propTypes = {
@@ -45,7 +51,8 @@ class InventoryScreen extends Component {
     dropSecondaryWeapon: PropTypes.func,
     dropQuestItem: PropTypes.func,
     usePotion: PropTypes.func,
-    dropPotion: PropTypes.func
+    dropPotion: PropTypes.func,
+    character: PropTypes.object
     };
 
 class MainItem extends Component {
@@ -123,11 +130,12 @@ const styles = StyleSheet.create(Object.assign({},{
 const mapStateToProps = state => {
     return {
         inventory : {
-            mainWeapon: weaponDescription(state.inventory.mainWeapon),
-            secondaryWeapon: weaponDescription(state.inventory.secondaryWeapon),
+            mainWeapon: weaponDescription(allWeapons[state.inventory.mainWeapon]),
+            secondaryWeapon: weaponDescription(allWeapons[state.inventory.secondaryWeapon]),
             questItems: state.inventory.questItems.map(i=>{return {key:i,name:allQuestItems[i].name}}),
             potions: state.inventory.potions.map(i=>{return {key:i,name:allPotions[i].name}})
-        }
+        },
+        character: state.character
        
     };
   };
