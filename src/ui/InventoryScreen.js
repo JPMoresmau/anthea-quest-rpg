@@ -9,6 +9,7 @@ import { dropMainWeapon,dropSecondaryWeapon,dropQuestItem,dropPotion,usePotion }
 import {TouchableButton} from './TouchableButton';
 import {weaponDescription} from './Names';
 import {textStyle} from './Styles';
+import { potions, allQuestItems, allPotions } from '../World';
 
 class InventoryScreen extends Component {
     static navigationOptions = {
@@ -24,13 +25,13 @@ class InventoryScreen extends Component {
           <FlatList
             data={inventory.questItems}
             renderItem={({item}) => 
-                <SecondaryItem text={item.key} onDrop={()=>this.props.dropQuestItem(item.key)}/> }
+                <SecondaryItem text={item.name} onDrop={()=>this.props.dropQuestItem(item.key)}/> }
             />
           <Text style={styles.listText}>Potions</Text>
             <FlatList
                 data={inventory.potions}
                 renderItem={({item}) => 
-                    <SecondaryItem text={item.key} onUse={()=>this.props.usePotion(item.key)} onDrop={()=>this.props.dropPotion(item.key)}/> }
+                    <SecondaryItem text={item.name} onUse={()=>this.props.usePotion(item.key)} onDrop={()=>this.props.dropPotion(item.key)}/> }
                 />
         </View>
       );
@@ -124,8 +125,8 @@ const mapStateToProps = state => {
         inventory : {
             mainWeapon: weaponDescription(state.inventory.mainWeapon),
             secondaryWeapon: weaponDescription(state.inventory.secondaryWeapon),
-            questItems: state.inventory.questItems.map(i=>{return {key:i.name}}),
-            potions: state.inventory.potions.map(i=>{return {key:i.name}})
+            questItems: state.inventory.questItems.map(i=>{return {key:i,name:allQuestItems[i].name}}),
+            potions: state.inventory.potions.map(i=>{return {key:i,name:allPotions[i].name}})
         }
        
     };

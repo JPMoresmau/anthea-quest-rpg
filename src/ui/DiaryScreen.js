@@ -3,22 +3,20 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import {characteristics} from './Names';
 import {textStyle} from './Styles';
 
-
-class CharacterScreen extends Component {
+class DiaryScreen extends Component {
     static navigationOptions = {
-      title: 'Character: Anthea',
+      title: "Anthea's diary",
     };
     render() {
-      const { chars } = this.props;
+      const { entries } = this.props;
       return (
         
         <View style={styles.container}>
           <FlatList
-            data={chars}
-            renderItem={({item}) => <Text style={styles.listText}>{item.key}:{item.value}</Text>}
+            data={entries}
+            renderItem={({item}) => <Text style={styles.listText}>{item.key}</Text>}
             />
 
           </View>
@@ -36,16 +34,14 @@ const styles = StyleSheet.create(Object.assign({},{
     }
   },textStyle));
 
-  CharacterScreen.propTypes = {
-    chars: PropTypes.array
+  DiaryScreen.propTypes = {
+    entries: PropTypes.array
     };
 
   const mapStateToProps = state => {
-    let chars = Object.entries(state.character).map(([key, value]) => ({key:characteristics[key],value:value}));
     return {
-        chars: chars
+        entries: state.diary.map(v => ({key:v}))
     };
   };
 
-
-  export default connect(mapStateToProps)(CharacterScreen);
+  export default connect(mapStateToProps)(DiaryScreen);

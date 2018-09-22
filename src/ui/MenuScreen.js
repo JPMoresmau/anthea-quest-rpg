@@ -19,7 +19,8 @@ export class MenuScreen extends React.Component {
             }/>
           <TouchableButton 
             text="Inventory"
-            label="Inventory" onPress={() =>
+            label="Inventory"
+            onPress={() =>
               navigate('Inventory', { })
             }/>
           <TouchableButton 
@@ -27,7 +28,10 @@ export class MenuScreen extends React.Component {
             label="Spells"/>
           <TouchableButton 
             text="Diary"
-            label="Diary"/>
+            label="Diary"
+            onPress={() =>
+              navigate('Diary', { })
+            }/>
           <TouchableButton 
             text="Load"
             label="Load Game"/>

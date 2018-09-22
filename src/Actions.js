@@ -5,6 +5,8 @@ export const DROP_SECONDARY_WEAPON = 'DROP_SECONDARY_WEAPON';
 export const DROP_QUEST_ITEM = 'DROP_QUEST_ITEM';
 export const DROP_POTION = 'DROP_POTION';
 
+export const USE_QUEST_ITEM = 'USE_QUEST_ITEM';
+
 export const USE_POTION = 'USE_POTION';
 
 export const PICKUP_MAIN_WEAPON = 'PICKUP_MAIN_WEAPON';
@@ -15,6 +17,8 @@ export const PICKUP_POTION = 'PICKUP_POTION';
 export const MOVE = 'MOVE';
 export const SET_FLAG = 'SET_FLAG';
 
+export const ADD_DIARY = 'ADD_DIARY';
+
 export function updateCharacter(characteristic, diff) {
     return {
       type: CHARACTER_UPDATE,
@@ -22,6 +26,10 @@ export function updateCharacter(characteristic, diff) {
       diff
     };
   }
+
+export function raiseXP(amount){
+  return updateCharacter("xp",amount);
+}
 
 export function dropMainWeapon(){
   return {
@@ -41,6 +49,14 @@ export function dropQuestItem(name){
     name
   };
 }
+
+export function useQuestItem(name){
+  return {
+    type:USE_QUEST_ITEM,
+    name
+  };
+}
+
 
 export function dropPotion(name){
   return {
@@ -95,5 +111,12 @@ export function setFlag(name){
   return {
     type:SET_FLAG,
     name
+  };
+}
+
+export function addDiary(entry){
+  return {
+    type:ADD_DIARY,
+    entry
   };
 }

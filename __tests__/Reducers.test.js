@@ -27,17 +27,17 @@ describe('reducer tests',()=>{
         test ("healing when not injured",()=>{
             const state=Object.assign({},initialState,{inventory:testInventory});
             expect(state.character.life).toBe(10);
-            const state2=reduceAll(state,usePotion('healing potion'));
+            const state2=reduceAll(state,usePotion('healing'));
             expect(state2.character.life).toBe(10);
-            expect(state2.inventory.potions).toEqual([poison]);
+            expect(state2.inventory.potions).toEqual(['poison']);
         });
         test ("healing after poison",()=>{
             const state=Object.assign({},initialState,{inventory:testInventory});
             expect(state.character.life).toBe(10);
             const state2=reduceAll(state,usePotion('poison'));
             expect(state2.character.life).toBe(2);
-            expect(state2.inventory.potions).toEqual([healing]);
-            const state3=reduceAll(state2,usePotion('healing potion'));
+            expect(state2.inventory.potions).toEqual(['healing']);
+            const state3=reduceAll(state2,usePotion('healing'));
             expect(state3.character.life).toBe(10);
             expect(state3.inventory.potions).toEqual([]); 
         });
@@ -67,7 +67,7 @@ describe('reducer tests',()=>{
             expect(getCurrentLocation(state).questItems).toEqual([]);
             expect(getCurrentLocation(state).name).toEqual("Selaion throne room");
             expect(state.inventory.questItems).toEqual([questItem1]);
-            const state2=reduceAll(state,dropQuestItem(questItem1.name));
+            const state2=reduceAll(state,dropQuestItem(questItem1));
             expect(getCurrentLocation(state2).questItems).toEqual([questItem1]);
             expect(state2.inventory.questItems).toEqual([]);
         });
@@ -75,10 +75,10 @@ describe('reducer tests',()=>{
             const state=Object.assign({},initialState,{inventory:testInventory});
             expect(getCurrentLocation(state).potions).toEqual([]);
             expect(getCurrentLocation(state).name).toEqual("Selaion throne room");
-            expect(state.inventory.potions).toEqual([healing,poison]);
-            const state2=reduceAll(state,dropPotion(healing.name));
-            expect(getCurrentLocation(state2).potions).toEqual([healing]);
-            expect(state2.inventory.potions).toEqual([poison]);
+            expect(state.inventory.potions).toEqual(["healing","poison"]);
+            const state2=reduceAll(state,dropPotion("healing"));
+            expect(getCurrentLocation(state2).potions).toEqual(["healing"]);
+            expect(state2.inventory.potions).toEqual(["poison"]);
         });
     });
 
@@ -99,17 +99,17 @@ describe('reducer tests',()=>{
         });
         test("pick up quest item",()=>{
             const state=Object.assign({},initialState,{inventory:testInventory});
-            const state2=reduceAll(state,dropQuestItem(questItem1.name));
-            const state3=reduceAll(state2,pickUpQuestItem(questItem1.name));
+            const state2=reduceAll(state,dropQuestItem(questItem1));
+            const state3=reduceAll(state2,pickUpQuestItem(questItem1));
             expect(getCurrentLocation(state3).questItems).toEqual([]);
             expect(state3.inventory.questItems).toEqual([questItem1]);
         });
         test("pick up potion",()=>{
             const state=Object.assign({},initialState,{inventory:testInventory});
-            const state2=reduceAll(state,dropPotion(healing.name));
-            const state3=reduceAll(state2,pickUpPotion(healing.name));
+            const state2=reduceAll(state,dropPotion("healing"));
+            const state3=reduceAll(state2,pickUpPotion("healing"));
             expect(getCurrentLocation(state3).potions).toEqual([]);
-            expect(state3.inventory.potions).toEqual([poison,healing]);
+            expect(state3.inventory.potions).toEqual(["poison","healing"]);
         });
     });
 
@@ -134,13 +134,11 @@ describe('reducer tests',()=>{
 
 const sword = {name:"sword",damage:{low:1,high:6}}
 const dagger = {name:"dagger",damage:{low:1,high:4}};
-const healing={name:"healing potion","effects":[{characteristic:'life',diff:HEALING_LIFE}]};
-const poison={name:"poison","effects":[{characteristic:'life',diff:POISON_LIFE}]};
-const questItem1={name:"some important quest item"};
+const questItem1="important quest item";
 
 const testInventory = {
     mainWeapon: sword,
     secondaryWeapon: dagger,
     questItems: [questItem1],
-    potions: [healing,poison]
+    potions: ["healing","poison"]
 }

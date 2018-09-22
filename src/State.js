@@ -1,4 +1,4 @@
-import { world, npcs, HEALING_LIFE, POISON_LIFE } from "./World";
+import { world, allNpcs, HEALING_LIFE, POISON_LIFE } from "./World";
 
 
 
@@ -16,8 +16,8 @@ export const initialCharacter = {
 export const initialInventory = {
     mainWeapon: {name:"sword",damage:{low:1,high:6}},
     secondaryWeapon: {name:"dagger",damage:{low:1,high:4}},
-    questItems: [{name:"some important quest item"}],
-    potions: [{name:"healing potion","effects":[{characteristic:'life',diff:HEALING_LIFE}]},{name:"poison","effects":[{characteristic:'life',diff:POISON_LIFE}]}]
+    questItems: [],
+    potions: []
 }
 
 export const emptyInventory = {
@@ -32,7 +32,7 @@ export const initialState = {
     character: initialCharacter,
     inventory: initialInventory,
     spells: [],
-    diary: [],
+    diary: ["I have decided it, and nothing will alter my resolve. I will set up in search for Father. Peleus cannot stop me."],
     location: "throne",
     world: {},
     npcs: {},
@@ -50,28 +50,44 @@ export function getLocation(state,locationName){
 }
 
 export function getNPC(state, npcKey){
-    const defaultNPC = npcs[npcKey];
+    const defaultNPC = allNpcs[npcKey];
     const myNPC = state.npcs[npcKey];
     return Object.assign({key:npcKey},defaultNPC,myNPC);
 }
 
 export function getExits(state){
     const myLoc=getCurrentLocation(state);
-    return myLoc.exits.filter(e=>itemWithFlag(state,e)).map(e=>({key:e.key,name:getLocation(state,e.key).name}));
+    return myLoc.exits.filter(e=>itemWithFlag(state,e)).map(e=>({key:e,name:getLocation(state,e).name}));
 }
 
 function itemWithFlag(state,item){
-    if (item.ifFilter){
-        return isFlagSet(state,item.ifFilter);
+    if (item.ifFlag){
+        return isFlagSet(state,item.ifFlag);
     }
     return true
 }
+
+function itemWithQuestItem(state,item){
+    if (item.ifQuestItem){
+        return hasQuestItem(state,item.ifQuestItem);
+    }
+    return true
+}
+
 
 export function isFlagSet(state,flag){
     return Boolean(state.flags[flag]);
 }
 
+export function hasQuestItem(state,item){
+    return state.inventory.questItems && state.inventory.questItems.filter(i=>i==item).length>0;
+}
+
 export function getInteraction(state,npcKey){
     const npc=getNPC(state,npcKey);
-    return npc.interactions.filter(e=>itemWithFlag(state,e))[0];
+    const ints= npc.interactions
+        .filter(e=>itemWithFlag(state,e)
+            && itemWithQuestItem(state,e))
+        ;
+    return ints[ints.length-1];
 }

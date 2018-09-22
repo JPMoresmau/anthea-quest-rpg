@@ -7,6 +7,7 @@ import { getCurrentLocation, getNPC, getExits, getInteraction } from '../State';
 import { textStyle } from './Styles';
 import { pickUpMainWeapon, pickUpQuestItem, pickUpPotion, moveTo } from '../Actions';
 import { weaponDescription } from './Names';
+import { allPotions, allQuestItems } from '../World';
 
 class MainScreen extends Component {
     static navigationOptions = {
@@ -105,10 +106,10 @@ const styles = StyleSheet.create(Object.assign({},{
         return {'key':w.name,'name':weaponDescription(w)};
       });
     const questItems = loc.questItems.map(i=>{
-        return {'key':i.name,'name':i.name};
+        return {'key':i,'name':allQuestItems[i].name};
       });  
     const potions = loc.potions.map(i=>{
-        return {'key':i.name,'name':i.name};
+        return {'key':i,'name':allPotions[i].name};
       });    
     const exits = getExits(state);
     return {
