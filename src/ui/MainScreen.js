@@ -7,9 +7,7 @@ import { getCurrentLocation, getNPC, getExits, getNPCInteraction, getAffordance,
 import { textStyle } from './Styles';
 import { pickUpMainWeapon, pickUpQuestItem, pickUpPotion, moveTo } from '../Actions';
 import { weaponDescription, toastCharacterChange } from './UIUtils';
-import { allPotions, allQuestItems } from '../World';
-
-
+import { allPotions, allQuestItems, allMonsters } from '../World';
 
 class MainScreen extends Component {
     static navigationOptions = {
@@ -18,6 +16,7 @@ class MainScreen extends Component {
     render() {
       const { navigate } = this.props.navigation;
       const { location, npcs, affordances, weapons, questItems, potions, exits } = this.props;
+      
       return (
         
         <View style={styles.container}>
@@ -61,7 +60,7 @@ class MainScreen extends Component {
             renderItem={({item}) => 
                 <ExitComponent text={item.name} onMove={()=>this.props.goToExit(item.key)}/> }
             />
-           
+
         </View>
       );
     }
@@ -108,8 +107,17 @@ class MainScreen extends Component {
       const newChar=this.props.state.character;
       const oldChar=prevProps.state.character;
       toastCharacterChange(oldChar,newChar);
-     
+
+
+      const newMonster=this.props.monster;
+      const oldMonster=prevProps.monster;
+      if (!oldMonster && newMonster){
+        this.props.navigation.navigate('Monster',{'previousLocation':prevProps.state.location})
+      }
     }
+
+    
+
   }
 
 MainScreen.propTypes = {
@@ -127,6 +135,7 @@ MainScreen.propTypes = {
   pickUpPotion: PropTypes.func,
   exits: PropTypes.array,
   goToExit: PropTypes.func,
+  monster: PropTypes.object
   };
 
 const styles = StyleSheet.create(Object.assign({},{ 
@@ -159,6 +168,8 @@ const styles = StyleSheet.create(Object.assign({},{
       }):[];    
     const exits = getExits(state);
 
+    const monster = loc.monster? allMonsters[loc.monster]: null;
+
     return {
         state: state,
         location: loc,
@@ -167,7 +178,8 @@ const styles = StyleSheet.create(Object.assign({},{
         weapons: weapons,
         questItems: questItems,
         potions: potions,
-        exits: exits
+        exits: exits,
+        monster: monster
     };
   };
 

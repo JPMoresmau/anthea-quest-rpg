@@ -40,7 +40,8 @@ export const world = {
     "cellar": {
         name: "The cellar",
         description: "Dark and a little bit damps. Amphoras and jars line up the walls.",
-        exits: ["kitchen"]
+        exits: ["kitchen"],
+        monster: "rats"
     },
     "courtyard": {
         name: "The courtyard",
@@ -185,5 +186,27 @@ export const allQuests = {
     },
     "cellarRats": {
         text: "Kill the rats in the cellar for Cherise the cook"
+    }
+}
+
+export const allMonsters = {
+    "rats": {
+        'name': "Small kitchen rats",
+        'character': {
+            strength: 3,
+            dexterity: 8,
+            willpower: 3,
+            intelligence: 2,
+            charisma: 1,
+            level: 1,
+            xp: 1,
+            life: 4
+        },
+        'inventory': {
+            mainWeapon: {
+                name:"Bites",damage:{low:1,high:4}
+            }
+        },
+        'attacks': ["The rats bite you for ${damages} damages"]
     }
 }

@@ -24,12 +24,10 @@ class DiaryScreen extends Component {
           let a=qs[e.quest];
           qs[e.quest]=pushArray(a,e);
         });
-        console.log(qs);
         const sections=[];
         for (const q in qs){
           sections.push({'key':q,'title':allQuests[q].text,'data':qs[q]})
         }
-        console.log(sections);
         list=<SectionList
              renderSectionHeader={({section}) => <Text style={styles.listText}>{section.title}</Text>}
              renderItem={({item}) => <Text style={styles.bulletText}>{item.key}</Text>}
