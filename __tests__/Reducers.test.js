@@ -1,4 +1,4 @@
-import {updateCharacter, usePotion, dropMainWeapon, pickUpMainWeapon, dropSecondaryWeapon, dropQuestItem, dropPotion, pickUpSecondaryWeapon, pickUpQuestItem, pickUpPotion, moveTo, setFlag} from "../src/Actions"
+import {updateCharacter, usePotion, dropMainWeapon, pickUpMainWeapon, dropSecondaryWeapon, dropQuestItem, dropPotion, pickUpSecondaryWeapon, pickUpQuestItem, pickUpPotion, moveTo, setFlag, removeFlag} from "../src/Actions"
 import {reduceAll} from "../src/Reducers"
 import {initialState, getCurrentLocation, isFlagSet} from "../src/State"
 
@@ -122,11 +122,13 @@ describe('reducer tests',()=>{
     });
 
     describe('Set flag',()=>{
-        test ("set flag to true",()=>{
+        test ("set flag to true then false",()=>{
             const state=Object.assign({},initialState,{inventory:testInventory});
-            expect(isFlagSet(state,"flag1")).toBe(false);
-            const state2=reduceAll(state,setFlag("flag1"));
-            expect(isFlagSet(state2,"flag1")).toBe(true);
+            expect(isFlagSet(state,"main","flag1")).toBe(false);
+            const state2=reduceAll(state,setFlag("main","flag1"));
+            expect(isFlagSet(state2,"main","flag1")).toBe(true);
+            const state3=reduceAll(state,removeFlag("main","flag1"));
+            expect(isFlagSet(state3,"main","flag1")).toBe(false);
         });
     });
 });

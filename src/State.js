@@ -1,6 +1,5 @@
-import { world, allNpcs } from "./World";
-
-
+import { world, allNpcs, allAffordances } from "./World";
+import { DONE } from "./Actions";
 
 export const initialCharacter = {
     strength: 8,
@@ -32,11 +31,17 @@ export const initialState = {
     character: initialCharacter,
     inventory: initialInventory,
     spells: [],
-    diary: ["I have decided it, and nothing will alter my resolve. I will set up in search for Father. Peleus cannot stop me."],
+    diary: [
+        { quest: "main",
+          text: "I have decided it, and nothing will alter my resolve. I will set up in search for Father. Peleus cannot stop me."
+        }
+        ],
     location: "throne",
     world: {},
     npcs: {},
-    flags: {}
+    affordances: {},
+    quests: {"main":{}},
+    ticks: 0
 }
 
 export function getCurrentLocation(state){
@@ -55,6 +60,12 @@ export function getNPC(state, npcKey){
     return Object.assign({key:npcKey},defaultNPC,myNPC);
 }
 
+export function getAffordance(state, affKey){
+    const defaultAff = allAffordances[affKey];
+    const myAff = state.affordances[affKey];
+    return Object.assign({key:affKey},defaultAff,myAff);
+}
+
 export function getExits(state){
     const myLoc=getCurrentLocation(state);
     return myLoc.exits.filter(e=>itemWithFlag(state,e)).map(e=>({key:e,name:getLocation(state,e).name}));
@@ -62,7 +73,7 @@ export function getExits(state){
 
 function itemWithFlag(state,item){
     if (item.ifFlag){
-        return isFlagSet(state,item.ifFlag);
+        return isFlagSet(state,item.ifFlag.quest,item.ifFlag.flag);
     }
     return true
 }
@@ -74,20 +85,43 @@ function itemWithQuestItem(state,item){
     return true
 }
 
+function itemWithQuestAchieved(state,item){
+    if (item.ifQuestAchieved){
+        return isQuestAchieved(state,item.ifQuestAchieved);
+    }
+    return true
+}
 
-export function isFlagSet(state,flag){
-    return Boolean(state.flags[flag]);
+
+export function isFlagSet(state,quest,flag){
+    return Boolean(state.quests[quest] && state.quests[quest][flag]);
 }
 
 export function hasQuestItem(state,item){
     return state.inventory.questItems && state.inventory.questItems.filter(i=>i==item).length>0;
 }
 
-export function getInteraction(state,npcKey){
+export function isQuestAchieved(state,quest){
+    return isFlagSet(state,quest,DONE);
+}
+
+export function getNPCInteraction(state,npcKey){
     const npc=getNPC(state,npcKey);
-    const ints= npc.interactions
+    return getInteraction(state, npc.interactions);
+}
+
+export function getAffordanceInteraction(state, affKey){
+    const aff=getAffordance(state, affKey);
+    return getInteraction(state, aff.interactions);
+}
+
+
+function getInteraction(state,interactions){
+    const ints= interactions
         .filter(e=>itemWithFlag(state,e)
-            && itemWithQuestItem(state,e))
+            && itemWithQuestItem(state,e)
+            && itemWithQuestAchieved(state,e))
         ;
     return ints[ints.length-1];
 }
+

@@ -1,5 +1,5 @@
 import { initialCharacter, initialState, initialInventory, getCurrentLocation} from "./State";
-import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION, MOVE, SET_FLAG, USE_QUEST_ITEM, ADD_DIARY} from "./Actions";
+import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION, MOVE, SET_FLAG, USE_QUEST_ITEM, ADD_DIARY, REMOVE_FLAG, MULTIPLE} from "./Actions";
 import {nextLevel, maxLifePoints, LIFE_PER_LEVEL} from './RPG'; 
 import {removeFirstMatch, pushArray, first} from './Utils';
 import { allPotions } from "./World";
@@ -144,13 +144,22 @@ function reduceState(state = initialState, action){
         case MOVE:
             return Object.assign({}, state,  {location:action.name});  
         case SET_FLAG:
-            let newFlags=Object.assign({},state.flags);
+            let newFlags=Object.assign({},state.quests[action.quest]);
             newFlags[action.name]=true;
-            return Object.assign({}, state,  {flags:newFlags});  
+            let newQuests = {...state.quests};
+            newQuests[action.quest]=newFlags;
+            return Object.assign({}, state,  {quests:newQuests});  
+        case REMOVE_FLAG:
+            let newFlags2=Object.assign({},state.quests[action.quest]);
+            delete newFlags2[action.name];
+            let newQuests2 = {...state.quests};
+            newQuests2[action.quest]=newFlags2;
+            return Object.assign({}, state,  {quests:newQuests2});  
         case ADD_DIARY:
+            const e={...action.entry,tick:state.ticks};
             return { 
                 ...state,
-                diary: state.diary.concat(action.entry)
+                diary: state.diary.concat(e)
             }
         default:
             return state;
@@ -158,6 +167,19 @@ function reduceState(state = initialState, action){
 }
 
 export function reduceAll(state=initialState,action){
+    switch (action.type){
+        case MULTIPLE:
+            let st=state;
+            for (const act in action.actions){
+                st=reduceAllOneAction(st,act);
+            }
+            return st;
+        default:
+            return reduceAllOneAction(state,action);
+    }
+}
+
+function reduceAllOneAction(state=initialState,action){
     const character = reduceCharacter(state.character,state.inventory,action);
     const inventory = reduceInventory(state.inventory,getCurrentLocation(state),action);
     const location = reduceLocation(getCurrentLocation(state),state.inventory,action);
@@ -165,8 +187,9 @@ export function reduceAll(state=initialState,action){
     nw[state.location]=location;
     const newWorld = Object.assign({},state.world,nw);
     const ns=reduceState(state,action);
+    const ticks= state.ticks;
     return Object.assign({}, ns, {
-        character: character, inventory: inventory,world: newWorld
+        character: character, inventory: inventory,world: newWorld, ticks: ticks+1
     });
 
 }

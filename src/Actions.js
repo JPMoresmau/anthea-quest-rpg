@@ -16,8 +16,15 @@ export const PICKUP_POTION = 'PICKUP_POTION';
 
 export const MOVE = 'MOVE';
 export const SET_FLAG = 'SET_FLAG';
+export const REMOVE_FLAG = 'REMOVE_FLAG';
 
 export const ADD_DIARY = 'ADD_DIARY';
+
+export const MULTIPLE = 'MULTIPLE';
+
+
+export const DONE = "DONE";
+export const STARTED = "STARTED";
 
 export function updateCharacter(characteristic, diff) {
     return {
@@ -107,16 +114,40 @@ export function moveTo(name){
   };
 }
 
-export function setFlag(name){
+export function setFlag(quest,name){
   return {
     type:SET_FLAG,
+    quest,
     name
   };
 }
 
-export function addDiary(entry){
+export function achieveQuest(quest,xp){
+  combine([setFlag(quest,DONE),raiseXP(xp)]);
+}
+
+export function startQuest(quest){
+  return setFlag(quest,STARTED);
+}
+
+export function removeFlag(quest,name){
+  return {
+    type:REMOVE_FLAG,
+    quest,
+    name
+  };
+}
+
+export function addDiary(quest, text){
   return {
     type:ADD_DIARY,
-    entry
+    entry: {quest,text}
   };
+}
+
+function combine(actions){
+  return {
+    type: MULTIPLE,
+    actions
+  }
 }
