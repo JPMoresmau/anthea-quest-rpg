@@ -1,5 +1,5 @@
-import { initialCharacter, initialState, initialInventory, getCurrentLocation} from "./State";
-import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION, MOVE, SET_FLAG, USE_QUEST_ITEM, ADD_DIARY, REMOVE_FLAG, MULTIPLE} from "./Actions";
+import { initialCharacter, initialState, initialInventory, getCurrentLocation, getMonsterInLocation} from "./State";
+import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION, MOVE, SET_FLAG, USE_QUEST_ITEM, ADD_DIARY, REMOVE_FLAG, MULTIPLE, MONSTER_UPDATE} from "./Actions";
 import {nextLevel, maxLifePoints, LIFE_PER_LEVEL} from './RPG'; 
 import {removeFirstMatch, pushArray, first} from './Utils';
 import { allPotions } from "./World";
@@ -134,6 +134,19 @@ function reduceLocation(location = {},inventory = initialInventory, action) {
         case PICKUP_POTION:
             let potions2 = removeFirstMatch(location.potions,(i=>i === action.name));
             return Object.assign({}, location,  {potions:potions2});    
+        case MONSTER_UPDATE:
+            const monster = getMonsterInLocation(location);
+            return { 
+                     ...location,
+                      monster: {
+                            ...monster,
+                            character:{
+                                ...monster.character,
+                                [action.characteristic]:monster.character[action.characteristic]+action.diff
+                            }
+                            
+                        }
+            }
         default:
             return location;
     }
@@ -179,14 +192,19 @@ export function reduceAll(state=initialState,action){
     }
 }
 
+export function reduceMultiple(state=initialState,actions){
+    let ns=state;
+    actions.forEach(a=>ns=reduceAll(ns,a));
+    return ns;
+}
+
 function reduceAllOneAction(state=initialState,action){
     const character = reduceCharacter(state.character,state.inventory,action);
     const inventory = reduceInventory(state.inventory,getCurrentLocation(state),action);
     const location = reduceLocation(getCurrentLocation(state),state.inventory,action);
-    let nw={};
-    nw[state.location]=location;
-    const newWorld = Object.assign({},state.world,nw);
+
     const ns=reduceState(state,action);
+    const newWorld = {...ns.world,[state.location]:location};
     const ticks= state.ticks;
     return Object.assign({}, ns, {
         character: character, inventory: inventory,world: newWorld, ticks: ticks+1

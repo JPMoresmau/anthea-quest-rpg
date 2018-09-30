@@ -3,11 +3,11 @@ import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {TouchableButton} from './TouchableButton';
-import { getCurrentLocation, getNPC, getExits, getNPCInteraction, getAffordance, getAffordanceInteraction } from '../State';
+import { getCurrentLocation, getNPC, getExits, getNPCInteraction, getAffordance, getAffordanceInteraction, getMonster } from '../State';
 import { textStyle } from './Styles';
 import { pickUpMainWeapon, pickUpQuestItem, pickUpPotion, moveTo } from '../Actions';
 import { weaponDescription, toastCharacterChange } from './UIUtils';
-import { allPotions, allQuestItems, allMonsters } from '../World';
+import { allPotions, allQuestItems } from '../World';
 
 class MainScreen extends Component {
     static navigationOptions = {
@@ -168,7 +168,7 @@ const styles = StyleSheet.create(Object.assign({},{
       }):[];    
     const exits = getExits(state);
 
-    const monster = loc.monster? allMonsters[loc.monster]: null;
+    const monster = getMonster(state);
 
     return {
         state: state,

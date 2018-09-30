@@ -1,4 +1,5 @@
 export const CHARACTER_UPDATE = 'CHARACTER_UPDATE';
+export const MONSTER_UPDATE = 'MONSTER_UPDATE';
 
 export const DROP_MAIN_WEAPON = 'DROP_MAIN_WEAPON';
 export const DROP_SECONDARY_WEAPON = 'DROP_SECONDARY_WEAPON';
@@ -29,6 +30,14 @@ export const STARTED = "STARTED";
 export function updateCharacter(characteristic, diff) {
     return {
       type: CHARACTER_UPDATE,
+      characteristic,
+      diff
+    };
+  }
+
+export function updateMonster(characteristic, diff) {
+    return {
+      type: MONSTER_UPDATE,
       characteristic,
       diff
     };

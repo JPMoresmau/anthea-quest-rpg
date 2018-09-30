@@ -1,4 +1,5 @@
 import Toast from 'react-native-simple-toast';
+import { allWeapons } from '../World';
 
 export const characteristics = {
     strength: "Strength",
@@ -12,6 +13,9 @@ export const characteristics = {
 }
 
 export function weaponDescription (weapon){
+    if (typeof weapon === 'string'){
+      weapon=allWeapons[weapon];
+    }
     if (weapon){
         return weapon.name + " (" + weapon.damage.low+"-"+ weapon.damage.high + ")";
     }

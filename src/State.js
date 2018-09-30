@@ -1,4 +1,4 @@
-import { world, allNpcs, allAffordances } from "./World";
+import { world, allNpcs, allAffordances, allMonsters } from "./World";
 import { DONE } from "./Actions";
 
 export const initialCharacter = {
@@ -69,6 +69,24 @@ export function getAffordance(state, affKey){
 export function getExits(state){
     const myLoc=getCurrentLocation(state);
     return myLoc.exits.filter(e=>itemWithFlag(state,e)).map(e=>({key:e,name:getLocation(state,e).name}));
+}
+
+export function getMonster(state){
+    return getMonsterInLocation(getCurrentLocation(state));
+}
+
+export function getMonsterInLocation(location){
+    const m=location.monster;
+    if (m){
+        if (typeof m === 'string'){
+            return allMonsters[m];
+        } else {
+            return m;
+        }
+
+    }
+    return null;
+
 }
 
 function itemWithFlag(state,item){

@@ -7,6 +7,7 @@ import { getCurrentLocation } from '../State';
 import { allMonsters } from '../World';
 import { textStyle } from './Styles';
 import { moveTo } from '../Actions';
+import { hitOrder, getStateActions, hit } from '../Combat';
 
 class MonsterScreen extends Component {
     static navigationOptions =({ navigation }) => {
@@ -32,9 +33,24 @@ class MonsterScreen extends Component {
         goBack();
      }
 
+     fight() {
+         const {state} = this.props;
+         const rnd = (low,high)=> Math.floor((Math.random() * high) + low);
+         const hits=hitOrder(state,rnd);
+         hits.forEach(h=> {
+            const cstate = this.props.state;
+            hit(h, cstate, rnd, (act)=>{
+                console.log(act);
+                getStateActions(act).forEach(a=>this.props.dynamic(a));
+                
+            });
+         });
+         
+     }
+
      render() {
-        const { navigate, goBack, getParam } = this.props.navigation;
-        const { monster, goToExit } = this.props;
+        const { navigate } = this.props.navigation;
+        const { monster } = this.props;
         let content;
         if (monster){
             content=<Text>{monster.name}</Text>;
@@ -50,7 +66,12 @@ class MonsterScreen extends Component {
                     text="Menu"
                     label="Main menu"/>
                 {content}
-               
+                <TouchableButton 
+                    onPress={() =>
+                    this.fight()
+                    }
+                    text="Fight"
+                    label="Fight the monster"/>
             </View>
         );
         
@@ -64,7 +85,8 @@ MonsterScreen.propTypes = {
     state: PropTypes.object,
     location: PropTypes.object,
     monster: PropTypes.object,
-    goToExit: PropTypes.func
+    goToExit: PropTypes.func,
+    dynamic: PropTypes.func
     };
   
   const styles = StyleSheet.create(Object.assign({},{ 
@@ -96,6 +118,9 @@ MonsterScreen.propTypes = {
   
     const mapDispatchToProps = dispatch => {
       return {
+        dynamic: (action) => {
+            dispatch(action);
+         },
         goToExit: (name) => {
             dispatch(moveTo(name));
           }
