@@ -21,6 +21,8 @@ export const REMOVE_FLAG = 'REMOVE_FLAG';
 
 export const ADD_DIARY = 'ADD_DIARY';
 
+export const ADD_EXIT = 'ADD_EXIT';
+
 export const MULTIPLE = 'MULTIPLE';
 
 
@@ -151,6 +153,13 @@ export function addDiary(quest, text){
   return {
     type:ADD_DIARY,
     entry: {quest,text}
+  };
+}
+
+export function addExit(exit){
+  return {
+    type:ADD_EXIT,
+    exit
   };
 }
 

@@ -11,7 +11,7 @@ class DeathScreen extends Component {
     };
     render() {
       const { navigate } = this.props.navigation;
-      
+      const { level, kills } = this.props;
       return (
         
         <View style={styles.container}>
@@ -21,7 +21,9 @@ class DeathScreen extends Component {
             }
             text="Menu"
             label="Main menu"/>
-            <Text>You are dead!</Text>
+            <Text style={styles.listText}>You are dead!</Text>
+            <Text style={styles.bulletText}>You&apos;ve reached level {level}.</Text>
+            <Text style={styles.bulletText}>You&apos;ve killed {kills} monsters.</Text>
          </View>
       );
     }
@@ -30,7 +32,9 @@ class DeathScreen extends Component {
 
 
 DeathScreen.propTypes = {
-    navigation: PropTypes.object
+    navigation: PropTypes.object,
+    level: PropTypes.number,
+    kills: PropTypes.number
 };
 
 const styles = StyleSheet.create(Object.assign({},{ 
@@ -49,7 +53,10 @@ const styles = StyleSheet.create(Object.assign({},{
   },textStyle));
 
 const mapStateToProps = state => {
-    return {};
+    return {
+        level: state.character.level,
+        kills: state.kills
+    };
 }
 
 export default connect(mapStateToProps)(DeathScreen);

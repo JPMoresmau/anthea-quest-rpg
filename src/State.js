@@ -41,7 +41,8 @@ export const initialState = {
     npcs: {},
     affordances: {},
     quests: {"main":{}},
-    ticks: 0
+    ticks: 0,
+    kills: 0
 }
 
 export function getCurrentLocation(state){
@@ -68,7 +69,7 @@ export function getAffordance(state, affKey){
 
 export function getExits(state){
     const myLoc=getCurrentLocation(state);
-    return myLoc.exits.filter(e=>itemWithFlag(state,e)).map(e=>({key:e,name:getLocation(state,e).name}));
+    return myLoc.exits.map(e=>({key:e,name:getLocation(state,e).name}));
 }
 
 export function getMonster(state){
@@ -91,7 +92,6 @@ export function getMonsterInLocation(location){
 
 function itemWithFlag(state,item){
     if (item.ifFlag){
-        console.log(item.ifFlag,state.quests);
         return isFlagSet(state,item.ifFlag.quest,item.ifFlag.flag);
     }
     return true

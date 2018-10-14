@@ -1,4 +1,4 @@
-import { STARTED, setFlag, raiseXP, useQuestItem, addDiary, updateCharacter, removeFlag, startQuest, achieveQuest } from "./Actions";
+import { STARTED, setFlag, raiseXP, useQuestItem, addDiary, updateCharacter, removeFlag, startQuest, achieveQuest, addExit, pickUpPotion } from "./Actions";
 
 export const world = {
     "throne": {
@@ -45,7 +45,8 @@ export const world = {
     "courtyard": {
         name: "The courtyard",
         description: "The main courtyard of the castle, where soldiers train.",
-        exits: ["throne","armory","gate","kitchen"]
+        exits: ["throne","armory","gate","kitchen"],
+        npcs: ["Scopas"]
     },
     "armory": {
         name: "The armory",
@@ -56,9 +57,14 @@ export const world = {
     "gate": {
         name: "The castle gate",
         description: "The main - and only - gate to the castle",
-        exits: ["courtyard"]
+        exits: ["courtyard"],
+        npcs: ["Theon"]
+    },
+    "outside": {
+        name: "The outside world",
+        description: "You made it to the outside! For the moment, the game ends here! Thanks for playing!",
+        exits: ["gate"]
     }
-
 
 }
 
@@ -72,7 +78,7 @@ export const allNpcs = {
             {ifFlag:{quest:"main",flag:"PeleusForbidden"},
             text:"Once again, I am NOT going to let a girl go chasing a ghost. Your duty is to stay here and marry to strenghten my kingdom. Don't insist!",
             },
-            {ifFlag:"hairCut",
+            {ifFlag:{quest:"main",flag:"hairCut"},
             actions: [setFlag("main","allowedToLeave"),addDiary("main","Peleus has allowed me to leave on my quest for Father!")],
             text:"I see you're determined enough get rid of the hair you were so proud of. Allright, I will give orders that you're allowed to leave."}
         ]
@@ -111,12 +117,41 @@ export const allNpcs = {
                 text: "These rats are still roaming the cellar. Can nobody get a sword to them?"
              }
             ,{  ifFlag:{quest:"cellarRats",flag:"killedRats"},
-                actions:[achieveQuest("cellarRats",1),addDiary("cellarRats","I killed the rats Cherise was complaining about.")],
-                text: "Thanks for killing these rats!"
+                actions:[achieveQuest("cellarRats",1),addDiary("cellarRats","I killed the rats Cherise was complaining about."),pickUpPotion("healing")],
+                text: "Thanks for killing these rats! Here's a little pick-me-up I've made!"
              }
             ,{ ifQuestAchieved: "cellarRats",
                text: "Thanks again for killing these rats!"
             }
+        ]
+    },
+    "Scopas": {
+        name: "Scopas, the weapons master",
+        interactions: [{
+            type:"question",
+            beforeText:"You want me to give you a quick training?",
+            actions: [setFlag("main","trained"),raiseXP(1),updateCharacter('dexterity',1),addDiary("main","Scopas gave me a hard fighting lesson.")],
+            afterText:"You're getting better with a weapon, but you still need to practise!"
+           },{
+            ifFlag:{quest:"main",flag:"trained"},
+            text:"You trained enough for today, don't tire yourself out"
+           }
+        ]
+    },
+    "Theon": {
+        name: "Theon, a palace guard",
+        interactions: [
+            {text:"You are forbidden to go outside. I'm sorry my lady, your brother's orders"},
+            {
+                ifFlag:{quest:"main",flag:"allowedToLeave"},
+                text:"Peleus told us we could let you go. Good luck, my lady",
+                actions:[raiseXP(2),setFlag("main","exitedPalace"),addDiary("main","I can now go out of the palace"),addExit("outside")]
+            },
+            {
+                ifFlag:{quest:"main",flag:"exitedPalace"},
+                text:"Good day, my lady"
+            }
+
         ]
     }
 }

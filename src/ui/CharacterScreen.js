@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import {characteristics} from './UIUtils';
 import {textStyle} from './Styles';
+import { maxLifePoints } from '../RPG';
 
 
 class CharacterScreen extends Component {
@@ -41,11 +42,17 @@ const styles = StyleSheet.create(Object.assign({},{
     };
 
   const mapStateToProps = state => {
-    let chars = Object.entries(state.character).map(([key, value]) => ({key:characteristics[key],value:value}));
+    let chars = Object.entries(state.character).map(([key, value]) => ({key:characteristics[key],value:getValue(state.character,key,value)}));
     return {
         chars: chars
     };
   };
 
+  function getValue(character, key, value){
+    if (key === 'life'){
+      return value+"/"+maxLifePoints(character.level);
+    }
+    return value;
+  }
 
   export default connect(mapStateToProps)(CharacterScreen);

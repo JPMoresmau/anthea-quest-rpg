@@ -33,14 +33,12 @@ export class MenuScreen extends React.Component {
               navigate('Diary', { })
             }/>
           <TouchableButton 
+            text="Save"
+            label="Save Game"/>
+          <TouchableButton 
             text="Load"
             label="Load Game"/>
-          <TouchableButton 
-            text="Close"
-            label="Close Menu"
-            onPress={() =>
-                navigate('Main', { })
-              }/>
+          
         </View>
       );
     }

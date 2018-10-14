@@ -34,7 +34,8 @@ describe ('Combat',()=>{
         expect(actions[0]).toEqual({
             type: 'CHARACTER_HIT',
             damages: 2,
-            critical: false
+            critical: false,
+            death: false
         });
         expect(actions[1]).toEqual({
             type: 'MONSTER_MISS'
@@ -49,13 +50,14 @@ describe ('Combat',()=>{
         expect(actions[0]).toEqual({
             type: 'CHARACTER_HIT',
             damages: 10,
-            critical: true
+            critical: true,
+            death: true
         });
         expect(actions[1]).toEqual({
             type: 'MONSTER_MISS'
         });
-        const state2=reduceMultiple(testState,getStateActions(actions[0]));
-        expect(getMonster(state2).character.life).toBe(-6);
+        const state2=reduceMultiple(testState,getStateActions(actions[0],getMonster(testState)));
+        expect(getMonster(state2)).toBeNull();
     });
     it('first round injury against rats',()=>{
         const actions=[];
@@ -67,7 +69,8 @@ describe ('Combat',()=>{
         expect(actions[1]).toEqual({
             type: 'MONSTER_HIT',
             damages: 2,
-            critical: false
+            critical: false,
+            death: false
         });
         const state2=reduceMultiple(testState,getStateActions(actions[1]));
         expect(getMonster(state2).character.life).toBe(4);
