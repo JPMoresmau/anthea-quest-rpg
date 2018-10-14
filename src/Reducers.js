@@ -1,5 +1,5 @@
 import { initialCharacter, initialState, initialInventory, getCurrentLocation, getMonsterInLocation} from "./State";
-import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION, MOVE, SET_FLAG, USE_QUEST_ITEM, ADD_DIARY, REMOVE_FLAG, MULTIPLE, MONSTER_UPDATE} from "./Actions";
+import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION, MOVE, SET_FLAG, USE_QUEST_ITEM, ADD_DIARY, REMOVE_FLAG, MULTIPLE, MONSTER_UPDATE, updateCharacter} from "./Actions";
 import {nextLevel, maxLifePoints, LIFE_PER_LEVEL} from './RPG'; 
 import {removeFirstMatch, pushArray, first} from './Utils';
 import { allPotions } from "./World";
@@ -198,16 +198,31 @@ export function reduceMultiple(state=initialState,actions){
     return ns;
 }
 
+function checkDeadMonster(location,character){
+    if (location.monster && location.monster.character && location.monster.character.life<=0){
+        const loc= {
+            ...location,
+            monster: null};
+        const c = reduceCharacter(character,null,updateCharacter('xp',location.monster.character.xp));
+        return { location: loc,
+              character: c
+            };
+    }
+    return {location,character};
+}
+
 function reduceAllOneAction(state=initialState,action){
     const character = reduceCharacter(state.character,state.inventory,action);
     const inventory = reduceInventory(state.inventory,getCurrentLocation(state),action);
     const location = reduceLocation(getCurrentLocation(state),state.inventory,action);
 
+    const ncl = checkDeadMonster(location,character);
+
     const ns=reduceState(state,action);
-    const newWorld = {...ns.world,[state.location]:location};
+    const newWorld = {...ns.world,[state.location]:ncl.location};
     const ticks= state.ticks;
     return Object.assign({}, ns, {
-        character: character, inventory: inventory,world: newWorld, ticks: ticks+1
+        character: ncl.character, inventory: inventory,world: newWorld, ticks: ticks+1, dead: character.life<=0
     });
 
 }

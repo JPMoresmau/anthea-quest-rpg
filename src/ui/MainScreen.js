@@ -158,7 +158,7 @@ const styles = StyleSheet.create(Object.assign({},{
     const npcs=loc.npcs?loc.npcs.map(n=>getNPC(state,n)):[];
     const affs=loc.affordances?loc.affordances.map(n=>getAffordance(state,n)):[];
     const weapons = loc.weapons?loc.weapons.map(w=>{
-        return {'key':w.name,'name':weaponDescription(w)};
+        return {'key':w.name?w.name:w,'name':weaponDescription(w)};
       }):[];
     const questItems = loc.questItems?loc.questItems.map(i=>{
         return {'key':i,'name':allQuestItems[i].name};

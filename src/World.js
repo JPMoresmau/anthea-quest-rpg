@@ -51,7 +51,8 @@ export const world = {
     "armory": {
         name: "The armory",
         description: "The guards weapons are kept here, in neat rows",
-        exits: ["courtyard"]
+        exits: ["courtyard"],
+        weapons: ["sword"]
     },
     "gate": {
         name: "The castle gate",

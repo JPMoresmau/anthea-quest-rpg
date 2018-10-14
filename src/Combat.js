@@ -50,11 +50,11 @@ export function getStateActions(combatAction){
 const MONSTER = 'MONSTER';
 const CHARACTER = 'CHARACTER';
 
-const CHARACTER_MISS = 'CHARACTER_MISS';
-const MONSTER_MISS = 'MONSTER_MISS';
+export const CHARACTER_MISS = 'CHARACTER_MISS';
+export const MONSTER_MISS = 'MONSTER_MISS';
 
-const CHARACTER_HIT = 'CHARACTER_HIT';
-const MONSTER_HIT = 'MONSTER_HIT';
+export const CHARACTER_HIT = 'CHARACTER_HIT';
+export const MONSTER_HIT = 'MONSTER_HIT';
 
 function _hit(char1, char2, rnd, dispatch){
     const sc1=score(char1);
@@ -68,10 +68,11 @@ function _hit(char1, char2, rnd, dispatch){
         if (critical){
             dmgs*=2;
         }
+        const death=dmgs >= char2.character.life;
         if (isCharacter(char1)){
-            dispatch(characterHit(dmgs,critical));
+            dispatch(characterHit(dmgs,critical,death));
         } else {
-            dispatch(monsterHit(dmgs,critical));
+            dispatch(monsterHit(dmgs,critical,death));
         }
     } else {
         miss(char1,char2,dispatch);
@@ -125,18 +126,20 @@ function monsterMiss(){
     };
 }
 
-function characterHit(damages,critical){
+function characterHit(damages,critical,death){
     return {
         type:CHARACTER_HIT,
         damages,
-        critical
+        critical,
+        death
     };
 }
 
-function monsterHit(damages,critical){
+function monsterHit(damages,critical,death){
     return {
         type:MONSTER_HIT,
         damages,
-        critical
+        critical,
+        death
     };
 }

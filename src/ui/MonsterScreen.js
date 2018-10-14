@@ -3,11 +3,12 @@ import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {TouchableButton} from './TouchableButton';
-import { getCurrentLocation } from '../State';
+import { getCurrentLocation, getMonsterInLocation } from '../State';
 import { allMonsters } from '../World';
 import { textStyle } from './Styles';
 import { moveTo } from '../Actions';
-import { hitOrder, getStateActions, hit } from '../Combat';
+import { hitOrder, getStateActions, hit, CHARACTER_HIT, CHARACTER_MISS, MONSTER_HIT, MONSTER_MISS } from '../Combat';
+import { pushArray } from '../Utils';
 
 class MonsterScreen extends Component {
     static navigationOptions =({ navigation }) => {
@@ -22,13 +23,37 @@ class MonsterScreen extends Component {
         };
       };
     
-      componentDidMount() {
+    constructor(props) {
+        super(props);
+        this.state = { entries : []};
+    }
+
+    componentDidMount() {
         this.props.navigation.setParams({ flee: this.flee });
-      }
+    }
+
+    componentDidUpdate() {
+        if (this.props.monster === null){
+            Alert.alert("Victory!","You win the fight!",[
+                {text:"Close",
+                onPress:()=>{
+                    this.props.navigation.goBack();
+                }
+                }]);
+        } else if (this.props.state.dead){
+            Alert.alert("Defeat!","You die!",[
+                {text:"Close",
+                onPress:()=>{
+                    this.props.navigation.navigate('Death');
+                }
+                }]);
+        }
+    }
 
      flee = () => {
         const { goBack, getParam } = this.props.navigation;
         const { goToExit } = this.props;
+        this.setState({ entries: []});
         goToExit(getParam('previousLocation'))
         goBack();
      }
@@ -37,20 +62,46 @@ class MonsterScreen extends Component {
          const {state} = this.props;
          const rnd = (low,high)=> Math.floor((Math.random() * high) + low);
          const hits=hitOrder(state,rnd);
+         let br = false;
          hits.forEach(h=> {
-            const cstate = this.props.state;
-            hit(h, cstate, rnd, (act)=>{
-                console.log(act);
-                getStateActions(act).forEach(a=>this.props.dynamic(a));
-                
-            });
+            if (!br){
+                const cstate = this.props.state;
+                hit(h, cstate, rnd, (act)=>{
+                    console.log(act);
+                    this.addEntry(act);
+                    getStateActions(act).forEach(a=>this.props.dynamic(a));
+                    br=act.death;
+                });
+            }
          });
          
      }
 
+    addEntry(act){
+        const { monster } = this.props;
+        const critical = act.critical? "CRITICAL ":""
+        let entry="";
+        switch (act.type){
+            case MONSTER_MISS:
+                entry=monster.name + ": Miss!";
+                break;
+            case MONSTER_HIT:
+                entry=monster.name+": "+critical+"hit for "+act.damages+" damages";
+                break;
+            case CHARACTER_MISS:
+                entry="You: Miss!";
+                break;
+            case CHARACTER_HIT:
+                entry="You: "+critical+"hit for "+act.damages+" damages";
+                break;
+        }
+        this.setState((state) => ({entries:pushArray(state.entries,{key:state.entries.length.toString(), text:entry})}));
+    }
+
      render() {
         const { navigate } = this.props.navigation;
         const { monster } = this.props;
+        const { entries } = this.state;
         let content;
         if (monster){
             content=<Text>{monster.name}</Text>;
@@ -66,12 +117,17 @@ class MonsterScreen extends Component {
                     text="Menu"
                     label="Main menu"/>
                 {content}
+                <FlatList
+                    data={entries}
+                    renderItem={({item}) => <Text style={styles.listText}>{item.text}</Text>}
+                    />
                 <TouchableButton 
                     onPress={() =>
                     this.fight()
                     }
                     text="Fight"
                     label="Fight the monster"/>
+
             </View>
         );
         
@@ -106,8 +162,7 @@ MonsterScreen.propTypes = {
   
     const mapStateToProps = state => {
       const loc = getCurrentLocation(state);
-      const monster = allMonsters[loc.monster];
-  
+      const monster = getMonsterInLocation(loc);
       return {
           state: state,
           location: loc,
