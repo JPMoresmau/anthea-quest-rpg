@@ -30,14 +30,14 @@ class DiaryScreen extends Component {
         }
         list=<SectionList
              renderSectionHeader={({section}) => <Text style={styles.listText}>{section.title}</Text>}
-             renderItem={({item}) => <Text style={styles.bulletText}>{item.key}</Text>}
+             renderItem={({item}) => <Text style={styles.bulletText}>{item.text}</Text>}
              sections={sections}
             />
         
       } else {
         list=<FlatList
           data={entries}
-          renderItem={({item}) => <Text style={styles.listText}>{item.key}</Text>}
+          renderItem={({item}) => <Text style={styles.listText}>{item.text}</Text>}
           />
       }
       return (
@@ -68,7 +68,7 @@ const styles = StyleSheet.create(Object.assign({},{
 
   const mapStateToProps = state => {
     return {
-        entries: state.diary.map(v => ({'key':v.text,'quest':v.quest,'tick':v.tick}))
+        entries: state.diary.map((v,ix) => ({'key': ix.toString(), 'text':v.text,'quest':v.quest,'tick':v.tick}))
     };
   };
 

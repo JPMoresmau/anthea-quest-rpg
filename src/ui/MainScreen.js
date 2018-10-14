@@ -11,7 +11,7 @@ import { allPotions, allQuestItems } from '../World';
 
 class MainScreen extends Component {
     static navigationOptions = {
-      title: 'FatherSearch',
+      title: 'Anthea\'s quest',
     };
     render() {
       const { navigate } = this.props.navigation;

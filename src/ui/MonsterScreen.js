@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {TouchableButton} from './TouchableButton';
 import { getCurrentLocation, getMonsterInLocation } from '../State';
-import { allMonsters } from '../World';
 import { textStyle } from './Styles';
 import { moveTo } from '../Actions';
 import { hitOrder, getStateActions, hit, CHARACTER_HIT, CHARACTER_MISS, MONSTER_HIT, MONSTER_MISS } from '../Combat';
@@ -59,7 +58,7 @@ class MonsterScreen extends Component {
      }
 
      fight() {
-         const {state} = this.props;
+         const {state,monster} = this.props;
          const rnd = (low,high)=> Math.floor((Math.random() * high) + low);
          const hits=hitOrder(state,rnd);
          let br = false;
@@ -67,9 +66,8 @@ class MonsterScreen extends Component {
             if (!br){
                 const cstate = this.props.state;
                 hit(h, cstate, rnd, (act)=>{
-                    console.log(act);
                     this.addEntry(act);
-                    getStateActions(act).forEach(a=>this.props.dynamic(a));
+                    getStateActions(act,monster).forEach(a=>this.props.dynamic(a));
                     br=act.death;
                 });
             }
@@ -79,20 +77,29 @@ class MonsterScreen extends Component {
 
     addEntry(act){
         const { monster } = this.props;
-        const critical = act.critical? "CRITICAL ":""
+        const critical = act.critical? "CRITICALLY ":""
         let entry="";
         switch (act.type){
             case MONSTER_MISS:
-                entry=monster.name + ": Miss!";
+                entry=monster.miss || monster.name + " misses!";
                 break;
             case MONSTER_HIT:
-                entry=monster.name+": "+critical+"hit for "+act.damages+" damages";
+                if (monster.attacks){
+                    let att = monster.attacks[0];
+                    if (monster.attacks.length>1){
+                        att=monster.attacks[Math.floor((Math.random() * monster.attacks.length) )]
+                    }
+                    entry= att.replace("${damages}",act.damages.toString());
+                } else {
+                    entry=monster.name+" "+critical+"hit for "+act.damages+" damages";
+                }
+               
                 break;
             case CHARACTER_MISS:
-                entry="You: Miss!";
+                entry="You miss!";
                 break;
             case CHARACTER_HIT:
-                entry="You: "+critical+"hit for "+act.damages+" damages";
+                entry="You "+critical+"hit for "+act.damages+" damages";
                 break;
         }
         this.setState((state) => ({entries:pushArray(state.entries,{key:state.entries.length.toString(), text:entry})}));

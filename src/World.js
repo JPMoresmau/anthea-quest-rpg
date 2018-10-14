@@ -1,5 +1,4 @@
-import { setFlag, raiseXP, useQuestItem, addDiary, updateCharacter, removeFlag, startQuest, achieveQuest } from "./Actions";
-import { STARTED } from "./State";
+import { STARTED, setFlag, raiseXP, useQuestItem, addDiary, updateCharacter, removeFlag, startQuest, achieveQuest } from "./Actions";
 
 export const world = {
     "throne": {
@@ -112,11 +111,11 @@ export const allNpcs = {
                 text: "These rats are still roaming the cellar. Can nobody get a sword to them?"
              }
             ,{  ifFlag:{quest:"cellarRats",flag:"killedRats"},
-                actions:[achieveQuest("cellarRats",1)],
+                actions:[achieveQuest("cellarRats",1),addDiary("cellarRats","I killed the rats Cherise was complaining about.")],
                 text: "Thanks for killing these rats!"
              }
             ,{ ifQuestAchieved: "cellarRats",
-               text: "Thanks for killing these rats!"
+               text: "Thanks again for killing these rats!"
             }
         ]
     }
@@ -208,6 +207,8 @@ export const allMonsters = {
                 name:"Bites",damage:{low:1,high:4}
             }
         },
-        'attacks': ["The rats bite you for ${damages} damages"]
+        'attacks': ["The rats bite you for ${damages} damages","The rats scratch you for ${damages} damages"],
+        'miss': "None of the rats manages to hurt you",
+        'quest':{name:"cellarRats",flag:"killedRats"}
     }
 }

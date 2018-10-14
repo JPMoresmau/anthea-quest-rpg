@@ -132,7 +132,7 @@ export function setFlag(quest,name){
 }
 
 export function achieveQuest(quest,xp){
-  combine([setFlag(quest,DONE),raiseXP(xp)]);
+  return combine([setFlag(quest,DONE),raiseXP(xp)]);
 }
 
 export function startQuest(quest){

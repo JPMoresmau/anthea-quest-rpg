@@ -12,6 +12,7 @@ import CharacterScreen from './src/ui/CharacterScreen';
 import DiaryScreen from './src/ui/DiaryScreen';
 import InventoryScreen from './src/ui/InventoryScreen';
 import MonsterScreen from './src/ui/MonsterScreen';
+import DeathScreen from './src/ui/DeathScreen';
 
 import { reduceAll } from './src/Reducers';
 
@@ -27,7 +28,8 @@ const AppNavigator = createStackNavigator({
   Character: { screen: CharacterScreen },
   Inventory: { screen: InventoryScreen },
   Diary: { screen: DiaryScreen },
-  Monster: { screen: MonsterScreen}
+  Monster: { screen: MonsterScreen},
+  Death: {screen: DeathScreen}
 }, {
   initialRouteName: 'Main',
   navigationOptions: {

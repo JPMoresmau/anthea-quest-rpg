@@ -1,5 +1,5 @@
 import { getMonster } from "./State";
-import { updateMonster, updateCharacter } from "./Actions";
+import { updateMonster, updateCharacter, setFlag } from "./Actions";
 import { allWeapons } from "./World";
 
 
@@ -36,10 +36,14 @@ export function hit(initiative, state, rnd, dispatch){
     }
 }
 
-export function getStateActions(combatAction){
+export function getStateActions(combatAction,monster){
     switch (combatAction.type){
         case CHARACTER_HIT:
-            return  [updateMonster('life',-combatAction.damages)];
+            const um=updateMonster('life',-combatAction.damages);
+            if (combatAction.death && monster && monster.quest){
+                return [um,setFlag(monster.quest.name,monster.quest.flag)];
+            }
+            return  [um];
         case MONSTER_HIT:
             return  [updateCharacter('life',-combatAction.damages)];
         default:

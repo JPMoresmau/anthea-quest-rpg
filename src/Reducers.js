@@ -183,8 +183,8 @@ export function reduceAll(state=initialState,action){
     switch (action.type){
         case MULTIPLE:
             let st=state;
-            for (const act in action.actions){
-                st=reduceAllOneAction(st,act);
+            for (let i=0;i<action.actions.length;i++){
+                st=reduceAllOneAction(st,action.actions[i]);
             }
             return st;
         default:

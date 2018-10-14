@@ -91,6 +91,7 @@ export function getMonsterInLocation(location){
 
 function itemWithFlag(state,item){
     if (item.ifFlag){
+        console.log(item.ifFlag,state.quests);
         return isFlagSet(state,item.ifFlag.quest,item.ifFlag.flag);
     }
     return true

@@ -1,6 +1,6 @@
 import {initialState, getMonster} from "../src/State"
 import { round, getStateActions } from "../src/Combat";
-import { reduceAll, reduceMultiple } from "../src/Reducers";
+import { reduceMultiple } from "../src/Reducers";
 
 describe ('Combat',()=>{
     it ('next random',()=>{
