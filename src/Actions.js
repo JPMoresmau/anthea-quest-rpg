@@ -25,6 +25,7 @@ export const ADD_EXIT = 'ADD_EXIT';
 
 export const MULTIPLE = 'MULTIPLE';
 
+export const LOAD = 'LOAD';
 
 export const DONE = "DONE";
 export const STARTED = "STARTED";
@@ -161,6 +162,13 @@ export function addExit(exit){
     type:ADD_EXIT,
     exit
   };
+}
+
+export function load(state){
+  return {
+    type: LOAD,
+    state
+  }
 }
 
 function combine(actions){

@@ -7,12 +7,13 @@ import {
 import { Provider } from 'react-redux'
 
 import MainScreen from './src/ui/MainScreen';
-import {MenuScreen} from './src/ui/MenuScreen';
+import MenuScreen from './src/ui/MenuScreen';
 import CharacterScreen from './src/ui/CharacterScreen';
 import DiaryScreen from './src/ui/DiaryScreen';
 import InventoryScreen from './src/ui/InventoryScreen';
 import MonsterScreen from './src/ui/MonsterScreen';
 import DeathScreen from './src/ui/DeathScreen';
+import LoadScreen from './src/ui/LoadScreen';
 
 import { reduceAll } from './src/Reducers';
 
@@ -29,7 +30,8 @@ const AppNavigator = createStackNavigator({
   Inventory: { screen: InventoryScreen },
   Diary: { screen: DiaryScreen },
   Monster: { screen: MonsterScreen},
-  Death: {screen: DeathScreen}
+  Death: {screen: DeathScreen},
+  Load: {screen: LoadScreen}
 }, {
   initialRouteName: 'Main',
   navigationOptions: {
@@ -41,7 +43,6 @@ const AppNavigator = createStackNavigator({
 const store = createStore(
   reduceAll,initialState
 );
-
 
 
 export default class App extends React.Component {

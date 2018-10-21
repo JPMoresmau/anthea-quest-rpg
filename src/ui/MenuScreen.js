@@ -2,8 +2,11 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import {TouchableButton} from './TouchableButton';
+import { connect } from 'react-redux';
+import { saveState } from '../Utils';
+import Toast from 'react-native-simple-toast';
 
-export class MenuScreen extends React.Component {
+class MenuScreen extends React.Component {
     static navigationOptions = {
       title: 'Main menu',
     };
@@ -34,19 +37,31 @@ export class MenuScreen extends React.Component {
             }/>
           <TouchableButton 
             text="Save"
-            label="Save Game"/>
+            label="Save Game"
+            onPress={()=>
+              this.save()
+            }/>
           <TouchableButton 
             text="Load"
-            label="Load Game"/>
+            label="Load Game"
+            onPress={() =>
+              navigate('Load', { })
+            }/>
           
         </View>
       );
+    }
+
+    save(){
+      saveState("manual",this.props.state);
+      Toast.show("Game saved");
     }
   
   }
 
 MenuScreen.propTypes = {
-    navigation: PropTypes.object
+    navigation: PropTypes.object,
+    state: PropTypes.object
     };
 
   export const styles = StyleSheet.create({ 
@@ -58,4 +73,11 @@ MenuScreen.propTypes = {
     },
   });
 
-  
+ 
+  const mapStateToProps = state => {
+    return {
+        state
+    };
+  };
+
+  export default connect(mapStateToProps)(MenuScreen);

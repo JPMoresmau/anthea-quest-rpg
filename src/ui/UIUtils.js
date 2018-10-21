@@ -28,8 +28,10 @@ export function toastCharacterChange(oldChar, newChar){
         for (let i in newChar){
           if (newChar[i]>oldChar[i]){
             msg="Gained "+(newChar[i]-oldChar[i]) + " " + characteristics[i];
+            break;
           } else if (newChar[i]<oldChar[i]){
             msg="Lost "+(oldChar[i]-newChar[i]) + " " + characteristics[i];
+            break;
           }
         }
       }
