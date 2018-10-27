@@ -1,4 +1,4 @@
-import { STARTED, setFlag, raiseXP, useQuestItem, addDiary, updateCharacter, removeFlag, startQuest, achieveQuest, addExit, pickUpPotion, learnSpell } from "./Actions";
+import { STARTED, setFlag, raiseXP, useQuestItem, addDiary, updateCharacter, removeFlag, startQuest, achieveQuest, addExit, pickUpPotion, learnSpell, removeMonster } from "./Actions";
 
 export const world = {
     "throne": {
@@ -69,7 +69,8 @@ export const world = {
     "vegetable": {
         name: "The vegetable garden",
         description: "The vegetable garden where what you eat grows",
-        exits: ["outside"]
+        exits: ["outside"],
+        monster: "wildboar"
     },
     "village": {
         name: "Selaion's village",
@@ -264,11 +265,42 @@ export const allMonsters = {
         'attacks': ["The rats bite you for ${damages} damages","The rats scratch you for ${damages} damages"],
         'miss': "None of the rats manages to hurt you",
         'quest':{name:"cellarRats",flag:"killedRats"}
+    },
+    "wildboar": {
+        'name': "Wild boar",
+        'character': {
+            strength: 8,
+            dexterity: 4,
+            willpower: 3,
+            intelligence: 2,
+            charisma: 1,
+            level: 1,
+            xp: 3,
+            life: 10
+        },
+        'inventory': {
+            mainWeapon: {
+                name:"Horns",damage:{low:1,high:6}
+            }
+        }
     }
 }
 
 export const allSpells= {
     "fear": {
-        'name': "Fear: Causes ennemies to flee in panic"
+        'name': "Fear",
+        'description': "Causes ennemies to flee in panic",
+        'cast': (_state,monster) => {
+            const acts=[removeMonster(),raiseXP(monster.character.xp)];
+            if (monster && monster.quest){
+                acts.push(setFlag(monster.quest.name,monster.quest.flag));
+            }
+            
+            return {
+                'description': "The spell causes "+monster.name+" to flee in panic!",
+                'death':true,
+                'actions': acts
+            }
+        }
     }
 }

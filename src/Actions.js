@@ -1,5 +1,6 @@
 export const CHARACTER_UPDATE = 'CHARACTER_UPDATE';
 export const MONSTER_UPDATE = 'MONSTER_UPDATE';
+export const MONSTER_REMOVE = 'MONSTER_REMOVE';
 
 export const DROP_MAIN_WEAPON = 'DROP_MAIN_WEAPON';
 export const DROP_SECONDARY_WEAPON = 'DROP_SECONDARY_WEAPON';
@@ -47,6 +48,12 @@ export function updateMonster(characteristic, diff) {
       diff
     };
   }
+
+export function removeMonster(){
+  return {
+    type: MONSTER_REMOVE
+  }
+}
 
 export function raiseXP(amount){
   return updateCharacter("xp",amount);

@@ -11,7 +11,7 @@ describe('storage tests',()=>{
         await AsyncStorage.clear();
         const ks1 = await listSaves();
         expect(ks1.length).toBe(0);
-        const st={'key1':'val1'};
+        const st={'character':{'level':1}};
         await saveState('manual',st);
         const ks2 = await listSaves();
         expect(ks2.length).toBe(1);
@@ -22,10 +22,10 @@ describe('storage tests',()=>{
         await AsyncStorage.clear();
         const ks1 = await listSaves();
         expect(ks1.length).toBe(0);
-        const st1={'key1':'val1'};
+        const st1={'character':{'level':1,'strength':1}};
         await saveState('auto',st1);
         await sleep(100);
-        const st2={'key1':'val2'};
+        const st2={'character':{'level':1,'strength':2}};
         await saveState('auto',st2);
         const ks2 = await listSaves();
         expect(ks2.length).toBe(1);
@@ -36,10 +36,10 @@ describe('storage tests',()=>{
         await AsyncStorage.clear();
         const ks1 = await listSaves();
         expect(ks1.length).toBe(0);
-        const st1={'key1':'val1'};
+        const st1={'character':{'level':1,'strength':1}};
         await saveState('manual',st1);
         await sleep(100);
-        const st2={'key1':'val2'};
+        const st2={'character':{'level':1,'strength':2}};
         await saveState('manual',st2);
         const ks2 = await listSaves();
         expect(ks2.length).toBe(2);

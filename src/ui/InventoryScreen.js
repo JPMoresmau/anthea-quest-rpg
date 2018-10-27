@@ -20,7 +20,7 @@ class InventoryScreen extends Component {
       return (
         <View style={styles.container}>
           <MainItem text="Main Weapon" value={inventory.mainWeapon} canDrop={inventory.mainWeapon!==weaponDescription(null)} onDrop={this.props.dropMainWeapon}/>
-          <MainItem text="Secondary Weapon" value={inventory.secondaryWeapon} canDrop={inventory.secondaryWeapon!==weaponDescription(null)} onDrop={this.props.dropSecondaryWeapon}/>
+          {/*<MainItem text="Secondary Weapon" value={inventory.secondaryWeapon} canDrop={inventory.secondaryWeapon!==weaponDescription(null)} onDrop={this.props.dropSecondaryWeapon}/>*/}
           <Text style={styles.listText}>Quest items</Text>
           <FlatList
             data={inventory.questItems}

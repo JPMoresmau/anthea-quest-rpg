@@ -1,13 +1,14 @@
 import React,{Component} from 'react';
-import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, Picker, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {TouchableButton} from './TouchableButton';
 import { getCurrentLocation, getMonsterInLocation } from '../State';
 import { textStyle } from './Styles';
 import { moveTo } from '../Actions';
-import { hitOrder, getStateActions, hit, CHARACTER_HIT, CHARACTER_MISS, MONSTER_HIT, MONSTER_MISS } from '../Combat';
+import { hitOrder, getStateActions, hit, CHARACTER_HIT, CHARACTER_MISS, MONSTER_HIT, MONSTER_MISS, SPELL_MISS, SPELL_HIT } from '../Combat';
 import { pushArray } from '../Utils';
+import { allSpells } from '../World';
 
 class MonsterScreen extends Component {
     static navigationOptions =({ navigation }) => {
@@ -24,7 +25,8 @@ class MonsterScreen extends Component {
     
     constructor(props) {
         super(props);
-        this.state = { entries : []};
+        const spell = props.spells.length?props.spells[0]:null;
+        this.state = { entries : [], spell};
     }
 
     componentDidMount() {
@@ -52,20 +54,21 @@ class MonsterScreen extends Component {
      flee = () => {
         const { goBack, getParam } = this.props.navigation;
         const { goToExit } = this.props;
-        this.setState({ entries: []});
+        this.setState({ entries: [], spell:null});
         goToExit(getParam('previousLocation'))
         goBack();
      }
 
-     fight() {
+     fight(spell) {
          const {state,monster} = this.props;
          const rnd = (low,high)=> Math.floor((Math.random() * high) + low);
-         const hits=hitOrder(state,rnd);
+         const fst= {state,rnd,spell};
+         const hits=hitOrder(fst);
          let br = false;
          hits.forEach(h=> {
             if (!br){
                 const cstate = this.props.state;
-                hit(h, cstate, rnd, (act)=>{
+                hit(h, {...fst,state:cstate}, (act)=>{
                     this.addEntry(act);
                     getStateActions(act,monster).forEach(a=>this.props.dynamic(a));
                     br=act.death;
@@ -74,7 +77,7 @@ class MonsterScreen extends Component {
          });
          
      }
-
+    
     addEntry(act){
         const { monster } = this.props;
         const critical = act.critical? "CRITICALLY ":""
@@ -101,19 +104,47 @@ class MonsterScreen extends Component {
             case CHARACTER_HIT:
                 entry="You "+critical+"hit for "+act.damages+" damages";
                 break;
+            case SPELL_MISS:
+                entry="The spell fizzles";
+                break;
+            case SPELL_HIT:
+                entry=act.result.description;
+                break;
         }
-        this.setState((state) => ({entries:pushArray(state.entries,{key:state.entries.length.toString(), text:entry})}));
+        this.setState((state) => ({...state,
+            entries:pushArray(state.entries,{key:state.entries.length.toString(), text:entry})}));
     }
 
      render() {
         const { navigate } = this.props.navigation;
-        const { monster } = this.props;
+        const { monster, spells } = this.props;
         const { entries } = this.state;
         let content;
         if (monster){
             content=<Text>{monster.name}</Text>;
         } else {
             content=<Text></Text>;
+        }
+        let spellChoice;
+        if (spells && spells.length){
+            const spellItems = spells.map(s=>{
+                return <Picker.Item key={s} label={allSpells[s].name} value={s} />;
+            });
+            spellChoice=<View><Picker
+                selectedValue={this.state.spell}
+                style={{ height: 50, width: 100 }}
+                onValueChange={(itemValue) => this.setState({...this.state,spell: itemValue})}>
+                {spellItems}
+                
+            </Picker>
+            <TouchableButton 
+                onPress={() =>
+                this.fight(this.state.spell)
+                }
+                text="Cast"
+                label="Cast a spell"/></View>;
+        } else {
+            spellChoice=<Text></Text>;
         }
         return (
             <View style={styles.container}>
@@ -134,7 +165,7 @@ class MonsterScreen extends Component {
                     }
                     text="Fight"
                     label="Fight the monster"/>
-
+                {spellChoice}
             </View>
         );
         
@@ -146,6 +177,7 @@ class MonsterScreen extends Component {
 MonsterScreen.propTypes = {
     navigation: PropTypes.object,
     state: PropTypes.object,
+    spells: PropTypes.array,
     location: PropTypes.object,
     monster: PropTypes.object,
     goToExit: PropTypes.func,
@@ -172,6 +204,7 @@ MonsterScreen.propTypes = {
       const monster = getMonsterInLocation(loc);
       return {
           state: state,
+          spells: state.spells,
           location: loc,
           monster: monster
       };

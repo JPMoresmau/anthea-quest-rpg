@@ -44,7 +44,7 @@ const styles = StyleSheet.create(Object.assign({},{
  
   const mapStateToProps = state => {
     return {spells:state.spells
-        .map(s=>({key: s, name: allSpells[s].name}))
+        .map(s=>({key: s, name: allSpells[s].name+': '+allSpells[s].description}))
         .sort((a,b)=>a.name.localeCompare(b.name))
         };
   };

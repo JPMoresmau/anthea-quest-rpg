@@ -18,7 +18,8 @@ describe ('Combat',()=>{
     });
     it('first round miss against rats',()=>{
         const actions=[];
-        round(testState,testRandom([0,18,18]),(a)=>actions.push(a));
+        const fs={state:testState,rnd:testRandom([0,18,18])};
+        round(fs,(a)=>actions.push(a));
         expect(actions.length).toBe(2);
         expect(actions[0]).toEqual({
             type: 'CHARACTER_MISS'
@@ -29,7 +30,8 @@ describe ('Combat',()=>{
     });
     it('first round hit against rats',()=>{
         const actions=[];
-        round(testState,testRandom([0,10,2,18]),(a)=>actions.push(a));
+        const fs={state:testState,rnd:testRandom([0,10,2,18])};
+        round(fs,(a)=>actions.push(a));
         expect(actions.length).toBe(2);
         expect(actions[0]).toEqual({
             type: 'CHARACTER_HIT',
@@ -45,7 +47,8 @@ describe ('Combat',()=>{
     });
     it('first round critical against rats',()=>{
         const actions=[];
-        round(testState,testRandom([0,1,2,18]),(a)=>actions.push(a));
+        const fs={state:testState,rnd:testRandom([0,1,2,18])};
+        round(fs,(a)=>actions.push(a));
         expect(actions.length).toBe(2);
         expect(actions[0]).toEqual({
             type: 'CHARACTER_HIT',
@@ -61,7 +64,8 @@ describe ('Combat',()=>{
     });
     it('first round injury against rats',()=>{
         const actions=[];
-        round(testState,testRandom([0,18,8,2]),(a)=>actions.push(a));
+        const fs={state:testState,rnd:testRandom([0,18,8,2])};
+        round(fs,(a)=>actions.push(a));
         expect(actions.length).toBe(2);
         expect(actions[0]).toEqual({
             type: 'CHARACTER_MISS'
