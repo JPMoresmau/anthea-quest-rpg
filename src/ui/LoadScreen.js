@@ -11,11 +11,14 @@ class LoadScreen extends React.Component {
     static navigationOptions = {
       title: 'Load a saved game',
     };
+    constructor(props) {
+      super(props);
+      this.state = { games : []};
+    }
     render() {
-      const { games } = this.props;
+      const { games } = this.state;
       return (
         <View style={styles.container}>
-          <Text style={styles.listText}>Quest items</Text>
           <FlatList
             data={games}
             renderItem={({item}) => 
@@ -23,7 +26,7 @@ class LoadScreen extends React.Component {
                 text="Load"
                 label="Load Game"
                 onPress={() => {
-                    this.load(item.key());
+                    this.load(item.key);
                 }}/>
                 </View>}
             />
@@ -32,20 +35,22 @@ class LoadScreen extends React.Component {
         </View>
       );
     }
-
+    componentDidMount() {
+      listSaves().then(gs=>this.setState({games:gs}));
+    }
     load(key){
       const { goBack } = this.props.navigation;
-      const state=getState(key);
-      this.props.load(state);
-      Toast.show("Game loaded");
-      goBack();
+      getState(key).then(state=>{
+        this.props.load(state);
+        Toast.show("Game loaded");
+        goBack();
+      });
     }
   
   }
 
 LoadScreen.propTypes = {
     navigation: PropTypes.object,
-    games: PropTypes.array,
     load: PropTypes.func
 };
 
@@ -60,9 +65,7 @@ LoadScreen.propTypes = {
 
  
   const mapStateToProps = () => {
-    return {
-        games:listSaves() 
-    };
+    return {};
   };
 
   const mapDispatchToProps = dispatch => {

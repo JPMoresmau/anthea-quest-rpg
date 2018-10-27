@@ -9,7 +9,7 @@
         "ecmaFeatures": {
             "jsx": true
         } },
-    "env": { "es6": true,"jest": true } ,
+    "env": { "es6": true,"jest": true,"browser": true } ,
     "rules":{
         "no-undef": 1,
         "no-unused-vars": 1,
