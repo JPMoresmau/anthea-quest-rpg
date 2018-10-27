@@ -1,11 +1,12 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import {TouchableButton} from './TouchableButton';
 import { connect } from 'react-redux';
-import { listSaves, getState } from '../Utils';
+import { listSaves, getState, removeState } from '../Utils';
 import { load } from '../Actions';
 import Toast from 'react-native-simple-toast';
+import { textStyle } from './Styles';
 
 class LoadScreen extends React.Component {
     static navigationOptions = {
@@ -22,11 +23,18 @@ class LoadScreen extends React.Component {
           <FlatList
             data={games}
             renderItem={({item}) => 
-                <View><Text>{item.name}</Text><TouchableButton 
+                <View style={styles.item}><Text style={styles.listText}>{item.name}</Text>
+                <TouchableButton 
                 text="Load"
                 label="Load Game"
                 onPress={() => {
                     this.load(item.key);
+                }}/>
+                <TouchableButton 
+                text="Remove"
+                label="Remove Game"
+                onPress={() => {
+                    this.remove(item.key);
                 }}/>
                 </View>}
             />
@@ -46,6 +54,21 @@ class LoadScreen extends React.Component {
         goBack();
       });
     }
+    remove(key){
+      Alert.alert("Remove saved game","Are you sure you want to delete his saved game?",[
+        {text:"Yes",
+         onPress:()=>{
+          removeState(key).then(()=>{
+            Toast.show("Save removed");
+            listSaves().then(gs=>this.setState({games:gs}));
+          });
+          }
+        },
+        {
+          text:"No"}
+        ]);
+      
+    }
   
   }
 
@@ -54,14 +77,19 @@ LoadScreen.propTypes = {
     load: PropTypes.func
 };
 
-  export const styles = StyleSheet.create({ 
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'space-evenly',
-    },
-  });
+const styles = StyleSheet.create(Object.assign({},{ 
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },item : {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start'
+}
+},textStyle));
 
  
   const mapStateToProps = () => {

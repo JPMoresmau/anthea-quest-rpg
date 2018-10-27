@@ -1,4 +1,4 @@
-import {updateCharacter, usePotion, dropMainWeapon, pickUpMainWeapon, dropSecondaryWeapon, dropQuestItem, dropPotion, pickUpSecondaryWeapon, pickUpQuestItem, pickUpPotion, moveTo, setFlag, removeFlag} from "../src/Actions"
+import {updateCharacter, usePotion, dropMainWeapon, pickUpMainWeapon, dropSecondaryWeapon, dropQuestItem, dropPotion, pickUpSecondaryWeapon, pickUpQuestItem, pickUpPotion, moveTo, setFlag, removeFlag, learnSpell} from "../src/Actions"
 import {reduceAll} from "../src/Reducers"
 import {initialState, getCurrentLocation, isFlagSet} from "../src/State"
 
@@ -129,6 +129,27 @@ describe('reducer tests',()=>{
             expect(isFlagSet(state2,"main","flag1")).toBe(true);
             const state3=reduceAll(state,removeFlag("main","flag1"));
             expect(isFlagSet(state3,"main","flag1")).toBe(false);
+        });
+    });
+
+    describe('learn spell',()=>{
+        test ("learn spell I didn't know",()=>{
+            const state = initialState;
+            expect(state.spells).toEqual([]);
+            expect(state.character.xp).toBe(0);
+            const state2 = reduceAll(state,learnSpell('fear',2));
+            expect(state2.spells).toEqual(['fear']);
+            expect(state2.character.xp).toBe(2);
+            const state3 = reduceAll(state2,learnSpell('fireball',3));
+            expect(state3.spells).toEqual(['fear','fireball']);
+            expect(state3.character.xp).toBe(5);
+        });
+        test ("learn spell I knew",()=>{
+            const state = initialState;
+            const state2 = reduceAll(state,learnSpell('fear',2));
+            const state3 = reduceAll(state2,learnSpell('fear',2));
+            expect(state3.spells).toEqual(['fear']);
+            expect(state3.character.xp).toBe(2);
         });
     });
 });

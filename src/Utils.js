@@ -41,7 +41,7 @@ export function first(arr){
 
 export async function saveState(prefix,state){
     const dt = new Date().toISOString();
-    const name = prefix + '/'+ dt;
+    const name = prefix + '/'+ dt + "/"+ state.character.level;
     if (prefix===AUTO){
         const ks = await listSaves();
         await AsyncStorage.multiRemove (
@@ -65,12 +65,19 @@ export async function getState(k){
     return JSON.parse(v);
 }
 
+export async function removeState(k){
+    await AsyncStorage.removeItem(k);
+}
+
 function extractSaveInfo(k){
     const val=k.substring('@anthea-quest/state/'.length);
     const comps=val.split('/');
-    let name=new Date(comps[1]).toString();
+    let name=new Date(comps[1]).toLocaleString();
+   
     if (comps[0]===AUTO){
         name=name +' (Automatic save)';
     }
+    let lvl = comps[2];
+    name = name +': Level ' + lvl;
     return  {'key':k,'name':name,'prefix':comps[0],'date':new Date(comps[1])};
 }

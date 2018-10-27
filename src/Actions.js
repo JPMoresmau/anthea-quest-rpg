@@ -15,6 +15,8 @@ export const PICKUP_SECONDARY_WEAPON = 'PICKUP_SECONDARY_WEAPON';
 export const PICKUP_QUEST_ITEM = 'PICKUP_QUEST_ITEM';
 export const PICKUP_POTION = 'PICKUP_POTION';
 
+export const LEARN_SPELL = 'LEARN_SPELL';
+
 export const MOVE = 'MOVE';
 export const SET_FLAG = 'SET_FLAG';
 export const REMOVE_FLAG = 'REMOVE_FLAG';
@@ -117,6 +119,14 @@ export function pickUpPotion(name){
     type:PICKUP_POTION,
     name
   };
+}
+
+export function learnSpell(name,xp){
+  return {
+    type:LEARN_SPELL,
+    name,
+    xp
+  }
 }
 
 export function moveTo(name){

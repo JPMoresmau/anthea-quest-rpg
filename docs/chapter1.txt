@@ -45,6 +45,13 @@ gate
 		-> refuse to let go out unless hair cut and talked to brother
 		-> +2xp
 
+outside
+
+garden
+	wild boar + 2xp
+
+village
+
 Max xp: 8
 Min xp: 4
 

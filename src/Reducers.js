@@ -1,25 +1,37 @@
 import { initialCharacter, initialState, initialInventory, getCurrentLocation, getMonsterInLocation} from "./State";
-import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION, MOVE, SET_FLAG, USE_QUEST_ITEM, ADD_DIARY, REMOVE_FLAG, MULTIPLE, MONSTER_UPDATE, updateCharacter, ADD_EXIT, LOAD} from "./Actions";
+import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION, MOVE, SET_FLAG, USE_QUEST_ITEM, ADD_DIARY, REMOVE_FLAG, MULTIPLE, MONSTER_UPDATE, updateCharacter, ADD_EXIT, LOAD, LEARN_SPELL} from "./Actions";
 import {nextLevel, maxLifePoints, LIFE_PER_LEVEL} from './RPG'; 
 import {removeFirstMatch, pushArray, first} from './Utils';
 import { allPotions } from "./World";
 
-function reduceCharacter(character=initialCharacter,inventory=initialInventory, action){
+function reduceCharacter(character=initialCharacter,inventory=initialInventory, spells = [], action){
     
     switch (action.type){
         case CHARACTER_UPDATE:
             let newChar={};
             newChar[action.characteristic]=character[action.characteristic]+action.diff;
             newChar=checkNextLevel(character,action,newChar);
-            return Object.assign({}, character,  newChar);
+            return {character:
+                Object.assign({}, character,  newChar),
+                spells};
         case USE_POTION:
             const cpotions = inventory.potions.filter(i=>i === action.name);
             if (cpotions.length>0){
-                return applyEffects(character,allPotions[cpotions[0]].effects);
+                return {character:
+                    applyEffects(character,allPotions[cpotions[0]].effects),
+                    spells};
             }
-            return character;
+            return {character,spells};
+        case LEARN_SPELL:
+            if (spells.indexOf(action.name)===-1){
+                return {
+                    character: reduceCharacter(character,null,[],updateCharacter('xp',action.xp)).character,
+                    spells: pushArray(spells,action.name)
+                }
+            }
+            return {character,spells};
         default:
-            return character;
+            return {character,spells};
     }
 }
 
@@ -209,7 +221,7 @@ function checkDeadMonster(location,character){
         const loc= {
             ...location,
             monster: null};
-        const c = reduceCharacter(character,null,updateCharacter('xp',location.monster.character.xp));
+        const c = reduceCharacter(character,null,[],updateCharacter('xp',location.monster.character.xp)).character;
         return { location: loc,
               character: c,
               kills: 1
@@ -219,7 +231,7 @@ function checkDeadMonster(location,character){
 }
 
 function reduceAllOneAction(state=initialState,action){
-    const character = reduceCharacter(state.character,state.inventory,action);
+    const {character,spells} = reduceCharacter(state.character,state.inventory,state.spells,action);
     const inventory = reduceInventory(state.inventory,getCurrentLocation(state),action);
     const location = reduceLocation(getCurrentLocation(state),state.inventory,action);
 
@@ -230,7 +242,7 @@ function reduceAllOneAction(state=initialState,action){
     const ticks = state.ticks;
     const kills = state.kills; 
     return Object.assign({}, ns, {
-        character: ncl.character, inventory: inventory,world: newWorld, ticks: ticks+1, kills: kills + ncl.kills, dead: character.life<=0
+        character: ncl.character, inventory, spells, world: newWorld, ticks: ticks+1, kills: kills + ncl.kills, dead: character.life<=0
     });
 
 }

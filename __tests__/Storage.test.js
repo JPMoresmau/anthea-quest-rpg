@@ -1,5 +1,5 @@
 import MockStorage from '../src/MockStorage';
-import { listSaves, saveState, getState } from '../src/Utils';
+import { listSaves, saveState, getState, removeState } from '../src/Utils';
 
 const storageCache = {};
 const AsyncStorage = new MockStorage(storageCache);
@@ -47,6 +47,10 @@ describe('storage tests',()=>{
         expect(st3).toEqual(st2);
         const st4 = await getState(ks2[1].key);
         expect(st4).toEqual(st1);
+        await removeState(ks2[0].key);
+        const ks3 = await listSaves();
+        expect(ks3.length).toBe(1);
+        expect(ks3[0].key).toEqual(ks2[1].key);
     });
 });
 

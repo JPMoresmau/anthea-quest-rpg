@@ -14,6 +14,7 @@ import InventoryScreen from './src/ui/InventoryScreen';
 import MonsterScreen from './src/ui/MonsterScreen';
 import DeathScreen from './src/ui/DeathScreen';
 import LoadScreen from './src/ui/LoadScreen';
+import SpellScreen from './src/ui/SpellScreen';
 
 import { reduceAll } from './src/Reducers';
 
@@ -21,6 +22,7 @@ import {
   createStackNavigator,
 } from 'react-navigation';
 import { initialState } from './src/State';
+
 
 
 const AppNavigator = createStackNavigator({
@@ -31,7 +33,8 @@ const AppNavigator = createStackNavigator({
   Diary: { screen: DiaryScreen },
   Monster: { screen: MonsterScreen},
   Death: {screen: DeathScreen},
-  Load: {screen: LoadScreen}
+  Load: {screen: LoadScreen},
+  Spells: {screen : SpellScreen}
 }, {
   initialRouteName: 'Main',
   navigationOptions: {

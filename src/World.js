@@ -1,4 +1,4 @@
-import { STARTED, setFlag, raiseXP, useQuestItem, addDiary, updateCharacter, removeFlag, startQuest, achieveQuest, addExit, pickUpPotion } from "./Actions";
+import { STARTED, setFlag, raiseXP, useQuestItem, addDiary, updateCharacter, removeFlag, startQuest, achieveQuest, addExit, pickUpPotion, learnSpell } from "./Actions";
 
 export const world = {
     "throne": {
@@ -40,6 +40,7 @@ export const world = {
         name: "The cellar",
         description: "Dark and a little bit damps. Amphoras and jars line up the walls.",
         exits: ["kitchen"],
+        questItems: ["scroll"],
         monster: "rats"
     },
     "courtyard": {
@@ -61,9 +62,19 @@ export const world = {
         npcs: ["Theon"]
     },
     "outside": {
-        name: "The outside world",
-        description: "You made it to the outside! For the moment, the game ends here! Thanks for playing!",
-        exits: ["gate"]
+        name: "Outside the castle",
+        description: "Just outside the castle",
+        exits: ["gate","vegetable","village"]
+    },
+    "vegetable": {
+        name: "The vegetable garden",
+        description: "The vegetable garden where what you eat grows",
+        exits: ["outside"]
+    },
+    "village": {
+        name: "Selaion's village",
+        description: "The villagers live in these small houses. The game ends here for now, thanks for playing!",
+        exits:["outside"]
     }
 
 }
@@ -85,7 +96,12 @@ export const allNpcs = {
     },
     "Cretien": {
         name: "Cretien, your old teacher",
-        interactions: [{text:"I'm always on the lookout for new knowledge"}]
+        interactions: [{text:"I'm always on the lookout for new knowledge"},
+        {
+            ifQuestItem:"scroll",
+            text:"Ooohh, this scroll is magic spell! Let me see if I can teach you the incantation",
+            actions: [useQuestItem("scroll"),learnSpell('fear',1)]
+        }]
     },
     "Nerita": {
         name: "Nerita, your maid",
@@ -207,6 +223,9 @@ export const allPotions = {
 export const allQuestItems = {
     "scissors": {
         name: "Sharp scissors"
+    },
+    "scroll": {
+        name: "A scroll enscribed with weird characters"
     }
 }
 
@@ -245,5 +264,11 @@ export const allMonsters = {
         'attacks': ["The rats bite you for ${damages} damages","The rats scratch you for ${damages} damages"],
         'miss': "None of the rats manages to hurt you",
         'quest':{name:"cellarRats",flag:"killedRats"}
+    }
+}
+
+export const allSpells= {
+    "fear": {
+        'name': "Fear: Causes ennemies to flee in panic"
     }
 }

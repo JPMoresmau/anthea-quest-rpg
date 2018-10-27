@@ -28,7 +28,10 @@ class MenuScreen extends React.Component {
             }/>
           <TouchableButton 
             text="Spells"
-            label="Spells"/>
+            label="Spells"
+            onPress={()=>
+              navigate('Spells',{ })
+            }/>
           <TouchableButton 
             text="Diary"
             label="Diary"
