@@ -1,3 +1,6 @@
+/**
+ * Screen showing the list of known spells
+ */
 import React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';

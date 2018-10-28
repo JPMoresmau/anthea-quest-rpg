@@ -1,3 +1,6 @@
+/**
+ * define Redux actions: their type name and helper functions to create an action
+ */
 export const CHARACTER_UPDATE = 'CHARACTER_UPDATE';
 export const MONSTER_UPDATE = 'MONSTER_UPDATE';
 export const MONSTER_REMOVE = 'MONSTER_REMOVE';
@@ -188,6 +191,10 @@ export function load(state){
   }
 }
 
+/**
+ * combine multiple actions into one
+ * @param {array} actions 
+ */
 function combine(actions){
   return {
     type: MULTIPLE,

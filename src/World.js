@@ -1,5 +1,12 @@
+/**
+ * Definition of the game content itself: the locations, NPCs, quest, items, weapons, etc.
+ * Potentially the game could be extended just by adding to this, or totally changed, while keeping the same mechanics
+ */
 import { STARTED, setFlag, raiseXP, useQuestItem, addDiary, updateCharacter, removeFlag, startQuest, achieveQuest, addExit, pickUpPotion, learnSpell, removeMonster } from "./Actions";
 
+/**
+ * locations with everything in them: NPCs, weapons, quest items, potions exits between locations
+ */
 export const world = {
     "throne": {
         name: "Selaion throne room",
@@ -80,6 +87,9 @@ export const world = {
 
 }
 
+/**
+ * NPCs with their possible interactions
+ */
 export const allNpcs = {
     "Peleus": {
         name: "Peleus, your brother",
@@ -173,6 +183,9 @@ export const allNpcs = {
     }
 }
 
+/**
+ * affordances with their possible interactions
+ */
 export const allAffordances = {
     "bedroomMirror": {
         name: "A little mirror",
@@ -210,6 +223,9 @@ export const allAffordances = {
 export const HEALING_LIFE = 10;
 export const POISON_LIFE = -8;
 
+/**
+ * potions and their effect
+ */
 export const allPotions = {
     "healing": {
         name: "Healing potion",
@@ -221,6 +237,9 @@ export const allPotions = {
     }
 }
 
+/**
+ * quest items
+ */
 export const allQuestItems = {
     "scissors": {
         name: "Sharp scissors"
@@ -230,11 +249,17 @@ export const allQuestItems = {
     }
 }
 
+/**
+ * weapons
+ */
 export const allWeapons  = {
     "sword" : {name:"Sword",damage:{low:1,high:6}},
     "dagger" : {name:"Dagger",damage:{low:1,high:4}}
 }
 
+/**
+ * quests
+ */
 export const allQuests = {
     "main" : {
         text: "Find out what has happened to Creon, your father."
@@ -244,6 +269,9 @@ export const allQuests = {
     }
 }
 
+/**
+ * monsters
+ */
 export const allMonsters = {
     "rats": {
         'name': "Small kitchen rats",
@@ -286,6 +314,9 @@ export const allMonsters = {
     }
 }
 
+/**
+ * spells
+ */
 export const allSpells= {
     "fear": {
         'name': "Fear",

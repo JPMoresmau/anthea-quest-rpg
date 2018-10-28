@@ -1,3 +1,7 @@
+/**
+ * Main adventure screen, showing the current locations, the NPCs to interact with, the items to pick up and the other locations the 
+ * player can navigate to
+ */
 import React,{Component} from 'react';
 import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';

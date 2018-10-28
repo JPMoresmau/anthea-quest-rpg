@@ -1,3 +1,7 @@
+/**
+ * mock async storage for testing
+ * TODO move somewhere else?
+ */
 export default class MockStorage {
     constructor(cache = {}) {
       this.storageCache = cache;

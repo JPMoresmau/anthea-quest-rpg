@@ -1,6 +1,12 @@
+/**
+ * Utility functions or objects for the UI
+ */
 import Toast from 'react-native-simple-toast';
 import { allWeapons } from '../World';
 
+/**
+ * characteristic names
+ */
 export const characteristics = {
     strength: "Strength",
     dexterity: "Dexterity",
@@ -12,6 +18,10 @@ export const characteristics = {
     life: "Life Points"
 }
 
+/**
+ * Name of a weapon
+ * @param {any} weapon : the weapon name or full object
+ */
 export function weaponDescription (weapon){
     if (typeof weapon === 'string'){
       weapon=allWeapons[weapon];
@@ -22,6 +32,11 @@ export function weaponDescription (weapon){
     return "None";
 }
 
+/**
+ * Show a Toast message when a characteristic has changed
+ * @param {character object} oldChar 
+ * @param {character object} newChar 
+ */
 export function toastCharacterChange(oldChar, newChar){
     let msg=null;
       if (newChar!==oldChar){

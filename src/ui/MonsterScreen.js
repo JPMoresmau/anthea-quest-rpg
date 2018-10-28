@@ -1,3 +1,6 @@
+/**
+ * when the current location contains a monster, this screen is shown, so the player can flee or fight, using weapons or spells
+ */
 import React,{Component} from 'react';
 import { Alert, FlatList, Picker, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';

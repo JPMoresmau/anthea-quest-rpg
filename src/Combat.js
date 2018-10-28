@@ -1,15 +1,26 @@
+/**
+ * Implements combat via weapon or spell
+ */
 import { getMonster } from "./State";
 import { updateMonster, updateCharacter, setFlag, removeMonster, raiseXP } from "./Actions";
 import { allWeapons, allSpells } from "./World";
 
 
-
+/**
+ * perform a round of fighting between player and monster
+ * this is actually not used by the UI, only for testing
+ * @param {object} fightState 
+ * @param {function} dispatch 
+ */
 export function round(fightState, dispatch){
     const hits=hitOrder(fightState);
     hits.forEach(round=>hit(round,fightState,dispatch));
 }
 
-
+/**
+ * get the order in which fighters will hit each other
+ * @param {object} fightState 
+ */
 export function hitOrder(fightState){
     const monster=getMonster(fightState.state);
     // monster can hit you while you say spell
@@ -29,6 +40,12 @@ export function hitOrder(fightState){
     }
 }
 
+/**
+ * Perform one hit
+ * @param {string} initiative : who is hitting
+ * @param {object} fightState : the current fight state
+ * @param {function} dispatch : the function to dispatch fighting actions to
+ */
 export function hit(initiative, fightState, dispatch){
     const monster=getMonster(fightState.state);
     switch(initiative){
@@ -44,6 +61,11 @@ export function hit(initiative, fightState, dispatch){
     }
 }
 
+/**
+ * Generates redux state action from fight actions
+ * @param {object} combatAction the fight action
+ * @param {object} monster the monster object
+ */
 export function getStateActions(combatAction,monster){
     switch (combatAction.type){
         case CHARACTER_HIT:
@@ -77,6 +99,13 @@ export const CHARACTER_HIT = 'CHARACTER_HIT';
 export const SPELL_HIT = 'SPELL_HIT';
 export const MONSTER_HIT = 'MONSTER_HIT';
 
+/**
+ * Calculates if the hitting character hits his opponent, for how much damage, etc.
+ * @param {object} char1 the character hitting
+ * @param {object} char2 the charactter hit
+ * @param {function} rnd random function
+ * @param {function} dispatch action dispatch function
+ */
 function _hit(char1, char2, rnd, dispatch){
     const sc1=score(char1);
     const sc2=score(char2);
@@ -100,6 +129,12 @@ function _hit(char1, char2, rnd, dispatch){
     }
 }
 
+/**
+ * Cast a spell
+ * @param {object} fightState the fight state
+ * @param {object} monster the monster the player cast the spell on
+ * @param {function} dispatch the function to send actions to
+ */
 function _spell(fightState, monster, dispatch){
     const sc1=spellScore(fightState.state);
     const sc2=spellScore(monster);
@@ -113,6 +148,12 @@ function _spell(fightState, monster, dispatch){
     }
 }
 
+/**
+ * calculates damages
+ * @param {object} char the character hitting
+ * @param {integer} delta difference between hit threshold and dice result
+ * @param {function} rnd random function
+ */
 function damages(char,delta,rnd) {
     let bonus=Math.round(delta/4);
     if (char.character.strength>10){
@@ -138,10 +179,18 @@ function miss(char1,char2,dispatch){
     }
 }
 
+/**
+ * weapon score
+ * @param {object} char 
+ */
 function score(char){
     return Math.round(((char.character.dexterity*2)+(char.character.strength))/3);
 }
 
+/**
+ * spell score
+ * @param {object} char 
+ */
 function spellScore(char){
     return Math.round(((char.character.willpower*2)+(char.character.intelligence))/3);
 }
@@ -196,6 +245,13 @@ function monsterHit(damages,critical,death){
     };
 }
 
+/**
+ * Calculate effect of a successful spell cast
+ * @param {object} fightState the fight state
+ * @param {object} monster the monster
+ * @param {integer} die die result
+ * @param {integer} hitThreshold the threshold to hit
+ */
 function spellEffect(fightState, monster, die, hitThreshold){
     return allSpells[fightState.spell].cast(fightState.state,monster,die, hitThreshold);
 }

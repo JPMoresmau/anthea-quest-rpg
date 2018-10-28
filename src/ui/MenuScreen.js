@@ -1,3 +1,6 @@
+/**
+ * Simple screen showing the system menu options
+ */
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';

@@ -1,3 +1,7 @@
+/**
+ * some styles definition
+ * TODO: migrate all styles from individual screens to this file to have centralized styling
+ */
 export const buttonStyle = {
     button:{
         backgroundColor: "#841584",

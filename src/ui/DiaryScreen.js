@@ -1,3 +1,7 @@
+/**
+ * Screen showing diary: quest entries
+ * you can select to see entries purely chronologically or grouped by quests
+ */
 import React,{Component} from 'react';
 import { FlatList, SectionList, StyleSheet, Switch, Text, View } from 'react-native';
 import PropTypes from 'prop-types';

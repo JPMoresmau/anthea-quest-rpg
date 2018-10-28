@@ -1,3 +1,6 @@
+/**
+ * Screen showing the inventory
+ */
 import React,{Component} from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';

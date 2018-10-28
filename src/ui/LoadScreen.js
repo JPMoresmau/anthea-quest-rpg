@@ -1,3 +1,6 @@
+/**
+ * Screen showing the saved games to be able to load a game
+ */
 import React from 'react';
 import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';

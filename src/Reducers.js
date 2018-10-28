@@ -1,9 +1,20 @@
+/**
+ * all redux reducers acting on the state or parts of the state
+ */
 import { initialCharacter, initialState, initialInventory, getCurrentLocation, getMonsterInLocation} from "./State";
 import {CHARACTER_UPDATE,DROP_MAIN_WEAPON,DROP_SECONDARY_WEAPON,DROP_QUEST_ITEM,DROP_POTION, USE_POTION, PICKUP_MAIN_WEAPON, PICKUP_SECONDARY_WEAPON, PICKUP_QUEST_ITEM, PICKUP_POTION, MOVE, SET_FLAG, USE_QUEST_ITEM, ADD_DIARY, REMOVE_FLAG, MULTIPLE, MONSTER_UPDATE, updateCharacter, ADD_EXIT, LOAD, LEARN_SPELL, MONSTER_REMOVE} from "./Actions";
 import {nextLevel, maxLifePoints, LIFE_PER_LEVEL} from './RPG'; 
 import {removeFirstMatch, pushArray, first} from './Utils';
 import { allPotions } from "./World";
 
+/**
+ * 
+ * @param {object} character the character acted on
+ * @param {object} inventory his inventory
+ * @param {array} spells the known spells
+ * @param {object} action the action
+ * @returns an object with character and spells
+ */
 function reduceCharacter(character=initialCharacter,inventory=initialInventory, spells = [], action){
     
     switch (action.type){
@@ -35,6 +46,12 @@ function reduceCharacter(character=initialCharacter,inventory=initialInventory, 
     }
 }
 
+/**
+ * Apply characteristic changes
+ * @param {object} character the character acted on
+ * @param {arrary} effects the characteristic effects to apply on the character
+ * @returns the new character
+ */
 function applyEffects(character, effects){
     let nc={};
     for (let i=0;i<effects.length;i++){
@@ -64,6 +81,13 @@ function usePotion(character, name){
     }
 }*/
 
+/**
+ * Check if xp changes have caused the character to raise levels
+ * @param {object} character the character acted on
+ * @param {object} action the action
+ * @param {object} newChar the new character after applying characteristic changes
+ * @returns the new character, possibly with a new level
+ */
 function checkNextLevel(character,action,newChar){
     if ("xp"===action.characteristic){
         let level=character.level;
@@ -83,6 +107,13 @@ function checkNextLevel(character,action,newChar){
     return newChar;
 }
 
+/**
+ * Inventory reduction
+ * @param {object} inventory the inventory
+ * @param {object} location the current location
+ * @param {object} action the action
+ * @returns the new inventory
+ */
 function reduceInventory(inventory = initialInventory,location = {}, action) {
     switch (action.type){
         case DROP_MAIN_WEAPON:
@@ -114,6 +145,13 @@ function reduceInventory(inventory = initialInventory,location = {}, action) {
 }
 
 
+/**
+ * Reduces location
+ * @param {object} location the location
+ * @param {object} inventory the inventory
+ * @param {object} action the action
+ * @returns the new location
+ */
 function reduceLocation(location = {},inventory = initialInventory, action) {
     switch (action.type){
         case DROP_MAIN_WEAPON:
@@ -172,6 +210,12 @@ function reduceLocation(location = {},inventory = initialInventory, action) {
     }
 }
 
+/**
+ * reduce general state
+ * @param {object} state the state
+ * @param {object} action the action
+ * @returns the new state
+ */
 function reduceState(state = initialState, action){
     switch (action.type){
         case MOVE:
@@ -199,6 +243,11 @@ function reduceState(state = initialState, action){
     }
 }
 
+/**
+ * entry point for reducer, handling first some special actions
+ * @param {object} state the state
+ * @param {object} action the action
+ */
 export function reduceAll(state=initialState,action){
     switch (action.type){
         case LOAD:
@@ -214,12 +263,23 @@ export function reduceAll(state=initialState,action){
     }
 }
 
+/**
+ * Applies several actions to the state
+ * @param {object} state the state
+ * @param {array} actions the actions
+ */
 export function reduceMultiple(state=initialState,actions){
     let ns=state;
     actions.forEach(a=>ns=reduceAll(ns,a));
     return ns;
 }
 
+/**
+ * Check if a monster was killed, raise xps and return kill count
+ * @param {object} location the current location
+ * @param {object} character the current character
+ * @returns an object containing location, character, kills
+ */
 function checkDeadMonster(location,character){
     if (location.monster && location.monster.character && location.monster.character.life<=0){
         const loc= {
@@ -234,6 +294,11 @@ function checkDeadMonster(location,character){
     return {location,character,kills:0};
 }
 
+/**
+ * Run all reducer for a normal action
+ * @param {object} state the state
+ * @param {object} action the action
+ */
 function reduceAllOneAction(state=initialState,action){
     const {character,spells} = reduceCharacter(state.character,state.inventory,state.spells,action);
     const inventory = reduceInventory(state.inventory,getCurrentLocation(state),action);

@@ -1,3 +1,6 @@
+/**
+ * Application entry point, defines the navigation screens and the redux store 
+ */
 import React from 'react';
 
 import {

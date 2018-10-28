@@ -1,3 +1,6 @@
+/**
+ * screen shown when you're dead
+ */
 import React,{Component} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';

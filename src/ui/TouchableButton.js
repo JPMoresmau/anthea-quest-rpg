@@ -1,6 +1,9 @@
+/**
+ * A button reacting to touch and styleable
+ */
 import React from 'react';
-import { TouchableOpacity , StyleSheet, Text, View } from 'react-native';
-
+import { TouchableOpacity , StyleSheet, Text } from 'react-native';
+import PropTypes from 'prop-types';
 import {buttonStyle} from './Styles';
 
 export class TouchableButton extends React.Component {
@@ -19,6 +22,10 @@ export class TouchableButton extends React.Component {
   
   }
 
-
+  TouchableButton.propTypes = {
+    onPress: PropTypes.func,
+    text: PropTypes.string,
+    label: PropTypes.string
+};
 
 const styles = StyleSheet.create(buttonStyle);
