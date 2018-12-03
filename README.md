@@ -6,9 +6,8 @@ This app is a little Role-Playing Game developed in React Native. The goal for m
 The game is not graphical, it's using basic React component like buttons, texts and lists. Still, it allows you to navigate a little world, interact with non playing characters, fight a couple of monsters, etc.
 
 # Technology
-This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
+This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app), which hae now [moved](https://github.com/expo/expo-cli/issues).
 
-The most recent version of the guide is available [here](https://github.com/react-community/create-react-native-app/blob/master/react-native-scripts/template/README.md).
 
 We use also Redux, React navigation and Jest for tests.
 

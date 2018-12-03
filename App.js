@@ -22,7 +22,7 @@ import SpellScreen from './src/ui/SpellScreen';
 import { reduceAll } from './src/Reducers';
 
 import {
-  createStackNavigator,
+  createStackNavigator, createAppContainer,
 } from 'react-navigation';
 import { initialState } from './src/State';
 
@@ -50,12 +50,14 @@ const store = createStore(
   reduceAll,initialState
 );
 
+const AppContainer = createAppContainer(AppNavigator);
+
 
 export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <AppNavigator />
+        <AppContainer />
       </Provider>
     );
   }
